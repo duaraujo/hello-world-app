@@ -24,7 +24,7 @@
 
       <a mat-menu-item [routerLink]="['/auth/login']">
         <mat-icon>exit_to_app</mat-icon>
-        <span>Log out</span>
+        <span>Sair</span>
       </a>
 
     </mat-menu>
@@ -45,9 +45,22 @@
           <p mat-line> Dashboard </p>
         </a>
 
+        <a mat-list-item [routerLink]="['/inventario']" routerLinkActive="active">
+          <mat-icon mat-list-icon>
+            dataset
+          </mat-icon>
+          <p mat-line> Inventario </p>
+        </a>
+        <a mat-list-item [routerLink]="['/arquivos']" routerLinkActive="active">
+          <mat-icon mat-list-icon>
+            file_open
+          </mat-icon>
+          <p mat-line> Arquivos </p>
+        </a>
+
         <a mat-list-item [routerLink]="['/auth/login']">
           <mat-icon mat-list-icon>exit_to_app</mat-icon>
-          <p mat-line> Log out </p>
+          <p mat-line> Sair </p>
         </a>
 
       </mat-nav-list>

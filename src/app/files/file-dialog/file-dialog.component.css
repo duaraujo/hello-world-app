@@ -1,0 +1,10 @@
+.align-right {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .right-buttons {
+    display: flex;
+    gap: 8px;
+  }

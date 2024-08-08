@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Imagens</h1>
+
+<mat-dialog-content>
+
+  <div class="image-container">
+    <button mat-button (click)="previousImage()" [disabled]="currentIndex === 0">Anterior</button>
+    <img [src]="data.images[currentIndex].base64" alt="{{ data.images[currentIndex].name }}" class="image-preview" />
+    <button mat-button (click)="nextImage()" [disabled]="currentIndex === data.images.length - 1">Próxima</button>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="actions">
+  <button mat-button mat-dialog-close>Fechar</button>
+  <button mat-raised-button color="warn" (click)="removeImage()">Remover</button>
+</mat-dialog-actions>

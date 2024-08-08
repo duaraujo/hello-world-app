@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Dados do arquivo JSON</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fileForm">
+    <div *ngFor="let key of formKeys">
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>{{ key }}</mat-label>
+        <input matInput [formControlName]="key">
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="align-right">
+  <button mat-button (click)="close()">Fechar</button>
+  <div class="right-buttons">
+    <button mat-raised-button color="accent" (click)="update()">Atualizar</button>
+    <button mat-raised-button color="primary" (click)="create()">Novo</button>
+  </div>
+</div>

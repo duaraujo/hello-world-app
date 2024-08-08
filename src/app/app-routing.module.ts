@@ -7,15 +7,25 @@ const appRoutes: Routes = [
   {
     path: 'auth',
     loadChildren: () =>
-      import('./features/auth/auth.module').then((m) => m.AuthModule),
+      import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: 'dashboard',
     loadChildren: () =>
-      import('./features/dashboard/dashboard.module').then(
+      import('./dashboard/dashboard.module').then(
         (m) => m.DashboardModule
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'inventario',
+    loadChildren: () => import('./inventario/inventario.module').then(m => m.InventarioModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'arquivos',
+    loadChildren: () => import('./files/files.module').then(m => m.EditFileModule),
+    canActivate: [AuthGuard]
   },
   {
     path: '**',
