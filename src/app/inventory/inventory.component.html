@@ -1,0 +1,54 @@
+<div class="container" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+  <div fxFlex="95%">
+    <mat-card>
+      <mat-card-content>
+        <div class="mat-typography">
+          <div class="mat-display-1">Inventário</div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+            <mat-form-field fxFlex>
+              <mat-label>Selecionar arquivo</mat-label>
+              <input matInput [(ngModel)]="directoryPath" (keyup.enter)="getFolders()"
+                placeholder="Digite o caminho do diretório">
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="getFolders()">Buscar</button>
+            <button mat-raised-button color="warn" (click)="clearFolders()">Limpar</button>
+          </div>
+
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-label>Filtro</mat-label>               
+              <input type="text" matInput [formControl]="filterControl" placeholder="Filtrar arquivos">
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row">
+            <div fxLayout="column" fxLayoutGap="10px" fxFlex="100%">
+
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  
+                <ng-container matColumnDef="folder">
+                  <th mat-header-cell *matHeaderCellDef> Nome do Arquivo </th>
+                  <td mat-cell *matCellDef="let element" (click)="onRowClicked(element)"
+                    [class.selected]="selection.isSelected(element)" class="pointer">
+                    {{ element }}
+                  </td>
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                  [class.selected-row]="selection.isSelected(row)">
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+            </div>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+</div>

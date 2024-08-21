@@ -1,0 +1,19 @@
+table {
+    width: 100%;
+}
+
+th.mat-sort-header-sorted {
+    color: black;
+}
+
+.selected {
+    background-color: #f0f0f0;
+}
+  
+.selected-row {
+    background-color: #e0e0e0 !important;
+}
+
+.pointer {
+    cursor: pointer;
+}

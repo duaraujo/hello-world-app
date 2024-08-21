@@ -1,17 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BASE_URL } from 'src/app/constants/app.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
 
-  private baseUrl = 'http://localhost:3000/arquivos';
-
   constructor(private http: HttpClient) {}
 
   getFiles(urlPath: string): Observable<File[]> {
-    return this.http.get<File[]>(`${this.baseUrl}/?urlPath=${encodeURIComponent(urlPath)}`);
+    return this.http.get<File[]>(`${BASE_URL}/arquivos/?urlPath=${encodeURIComponent(urlPath)}`);
   }
 }

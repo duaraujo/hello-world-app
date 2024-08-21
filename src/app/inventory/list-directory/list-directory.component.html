@@ -1,0 +1,74 @@
+<div class="container" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+  <div fxFlex="95%">
+    <mat-card>
+      <mat-card-content>
+        <div class="mat-typography">
+          <div class="mat-display-1">{{ folderName }}</div>
+          <form [formGroup]="form" fxLayoutGap="5%">
+            <div fxLayout="row" fxLayoutGap="5%" fxLayoutAlign="start stretch" fxFlex>
+              <mat-form-field fxFlex>
+                <mat-label>Data Inicial</mat-label>
+                <input matInput formControlName="startDate" type="date">
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <mat-label>Data Final</mat-label>
+                <input matInput formControlName="endDate" type="date">
+              </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start stretch" fxFlex class="align">
+              <mat-form-field fxFlex>
+                <mat-label>Analista</mat-label>
+                <input matInput formControlName="analyst" type="text">
+              </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px" class="button-group">
+              <button mat-raised-button color="primary" (click)="getFiles()">Pesquisar</button>
+              <button mat-raised-button (click)="onBack()">Voltar</button>
+            </div>
+          </form>
+
+          <mat-table [dataSource]="dataSource" class="mat-elevation-z8 small-table" *ngIf="dataSource.length > 0">
+            
+            <ng-container matColumnDef="image">
+              <mat-header-cell *matHeaderCellDef style="width: 60%;"> Imagem </mat-header-cell>
+              <mat-cell *matCellDef="let element" style="width: 60%;">
+                <img [src]="'data:image/jpeg;base64,' + element.image" class="images" alt="Sample Image"
+                  style="max-width: 100%; height: auto;" />
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="extraImages">
+              <mat-header-cell *matHeaderCellDef> Imagens Extras </mat-header-cell>
+              <mat-cell *matCellDef="let element" (click)="onRowClicked(element)">
+                <div class="extra-images-container">
+                  <div *ngFor="let extraImage of element.extraImages" class="extra-image">
+                    <img [src]="'data:image/jpeg;base64,' + extraImage" style="max-width: 70%; height: auto;" alt="Extra Image" />
+                  </div>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="details">
+              <mat-header-cell *matHeaderCellDef style="width: 55%;"> Detalhes </mat-header-cell>
+              <mat-cell *matCellDef="let element" style="width: 55%; padding: 4px;" (click)="onRowClicked(element)">
+                <div fxLayout="column" fxLayoutGap="8px">
+                  <div><strong>File name:</strong> {{element.details.fileName}}</div>
+                  <div><strong>Data:</strong> {{element.details.datetime}}</div>
+                  <div><strong>Analista:</strong> {{element.details.analystName}}</div>
+                  <div><strong>Blank File Name:</strong> {{element.details.blankFileName}}</div>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="mat-row"></mat-row>
+          </mat-table>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

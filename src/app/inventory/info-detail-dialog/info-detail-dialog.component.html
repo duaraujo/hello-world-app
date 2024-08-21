@@ -1,0 +1,38 @@
+
+<h1 mat-dialog-title>Dados Completos</h1>
+
+<mat-dialog-content>
+  <div class="image-container">
+    <!-- Botão "Anterior" aparece somente se não estiver na visualização de texto ou se houver imagens anteriores -->
+    <button mat-button *ngIf="!isTextView || currentIndex > 0" (click)="previous()">Anterior</button>
+
+    <div *ngIf="isTextView">
+      <p><strong>App Name:</strong> {{data.app.appName}}</p>
+      <p><strong>Package Name:</strong> {{data.app.packageName}}</p>
+      <p><strong>Version Name:</strong> {{data.app.versionName}}</p>
+
+      <p><strong>Device alias:</strong> {{data.device.alias}}</p>
+      <p><strong>Android version:</strong> {{data.device.androidVersion}}</p>
+      <p><strong>Manufacture:</strong> {{data.device.manufacturer}}</p>
+      <p><strong>Model:</strong> {{data.device.model}}</p>
+
+      <p><strong>Alkalinity Unit:</strong> {{data.sample.alkalinityUnit}}</p>
+      <p><strong>File Name:</strong> {{data.sample.title}}</p>
+      <p><strong>Datetime:</strong> {{data.sample.datetime}}</p>
+      <p><strong>Analyst Name:</strong> {{data.sample.analystName}}</p>
+      <p><strong>Blank File Name:</strong> {{data.sample.blankFileName}}</p>
+    </div>
+    
+    <div *ngIf="!isTextView" class="image-container">
+      <img [src]="'data:image/jpeg;base64,' + images[currentIndex]" alt="Image {{ currentIndex + 1 }}"
+        class="image-preview" />
+    </div>
+
+    <!-- Botão "Próxima" aparece se estiver na tela de texto ou se não for a última imagem -->
+    <button mat-button *ngIf="isTextView || currentIndex < images.length - 1" (click)="next()">Próxima</button>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="actions">
+  <button mat-button mat-dialog-close>Fechar</button>
+</mat-dialog-actions>

@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
+const sharp = require('sharp');
 
 const app = express();
 app.use(express.json());
@@ -37,6 +38,7 @@ app.get('/folders', (req, res) => {
   });
 });
 
+
 app.get('/images', (req, res) => {
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
   const directoryPath = `${pathDefault}/${req.query.directoryPath}`;
@@ -62,6 +64,7 @@ app.get('/images', (req, res) => {
     res.json(images);
   });
 });
+
 
 app.delete('/image', (req, res) => {
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
@@ -110,12 +113,10 @@ app.post('/create-file', (req, res) => {
   const filePath = path.join(directoryPath, fileName);
   const fileContent = req.body.fileContent;
 
-  // Verifica se o diretório existe
   if (!fs.existsSync(directoryPath)) {
     return res.status(400).json({ error: 'Directory does not exist' });
   }
 
-  // Função para transformar o conteúdo plano em formato JSON
   const transformToJson = (content) => {
     const result = {};
     Object.keys(content).forEach(key => {
@@ -136,7 +137,6 @@ app.post('/create-file', (req, res) => {
 
   const transformedContent = transformToJson(fileContent);
 
-  // Cria e escreve no novo arquivo
   fs.writeFile(filePath, JSON.stringify(transformedContent, null, 2), 'utf8', (err) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to create file' });
@@ -146,6 +146,98 @@ app.post('/create-file', (req, res) => {
 });
 
 
+
+app.get('/json-files', async (req, res) => {
+  const pathDefault = '/home/eduardo_araujo/Documentos/project';
+  const directoryPath = `${pathDefault}/${req.query.directoryPath}`;
+  const analystName = req.query.analystName;
+  const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+  const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
+
+  const result = [];
+
+  async function convertImageToBase64(imagePath) {
+    try {
+      const imageBuffer = fs.readFileSync(imagePath);
+
+      // Usando sharp para redimensionar e comprimir a imagem
+      const resizedImageBuffer = await sharp(imageBuffer)
+        .resize({ width: 300 }) // Redimensiona a largura para 500px, mantendo a proporção
+        .jpeg({ quality: 40 })  // Converte para JPEG e reduz a qualidade para 70%
+        .toBuffer();
+
+      return resizedImageBuffer.toString('base64');
+    } catch (error) {
+      console.error(`Erro ao converter a imagem para base64: ${imagePath}`, error);
+      return null;
+    }
+  }
+
+  async function readJsonFilesFromDir(dirPath) {
+    const files = fs.readdirSync(dirPath, { withFileTypes: true });
+
+    for (const file of files) {
+      const fullPath = path.join(dirPath, file.name);
+
+      if (file.isDirectory()) {
+        await readJsonFilesFromDir(fullPath);
+      } else if (path.extname(file.name) === '.json') {
+        const fileContent = fs.readFileSync(fullPath, 'utf8');
+        try {
+          const jsonContent = JSON.parse(fileContent);
+
+          if (jsonContent.sample && jsonContent.sample.colorReagent) {
+            delete jsonContent.sample.colorReagent;
+            delete jsonContent.sample.sourceStock;
+            delete jsonContent.sample.sourceAliquot;
+          }
+
+          // Converte a propriedade fileName para base64
+          if (jsonContent.sample && jsonContent.sample.fileName) {
+            const imagePath = path.join(dirPath, jsonContent.sample.fileName);
+            const base64Image = await convertImageToBase64(imagePath);
+            jsonContent.sample.title = jsonContent.sample.fileName;
+            if (base64Image) {
+              jsonContent.sample.fileName = base64Image;
+            }
+          }
+
+          // Converte extraFileNames para base64, se existir
+          if (jsonContent.sample && jsonContent.sample.extraFileNames) {
+            const base64ExtraFiles = await Promise.all(
+              jsonContent.sample.extraFileNames.map(async (extraFileName) => {
+                const extraImagePath = path.join(dirPath, extraFileName);
+                return await convertImageToBase64(extraImagePath);
+              })
+            );
+            jsonContent.sample.extraFileNames = base64ExtraFiles;
+          }
+
+          // Convertendo datetime para um objeto de Data para comparação
+          const sampleDatetime = new Date(jsonContent.sample.datetime.split(" ")[0].replace(/\./g, '-'));
+
+          // Aplicando os filtros de data e analystName, se fornecidos
+          if (
+            (!analystName || jsonContent.sample.analystName === analystName) &&
+            (!startDate || sampleDatetime >= startDate) &&
+            (!endDate || sampleDatetime <= endDate)
+          ) {
+            result.push(jsonContent);
+          }
+        } catch (error) {
+          console.error(`Erro ao parsear o arquivo JSON: ${fullPath}`, error);
+        }
+      }
+    }
+  }
+
+  try {
+    await readJsonFilesFromDir(directoryPath);
+    res.json(result);
+  } catch (err) {
+    res.status(500).send(`Erro ao ler o diretório: ${err.message}`);
+  }
+});
 
 
 

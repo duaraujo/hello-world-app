@@ -18,13 +18,18 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'inventario',
+    path: 'dataset',
     loadChildren: () => import('./inventario/inventario.module').then(m => m.InventarioModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'arquivos',
     loadChildren: () => import('./files/files.module').then(m => m.EditFileModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory',
+    loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
     canActivate: [AuthGuard]
   },
   {

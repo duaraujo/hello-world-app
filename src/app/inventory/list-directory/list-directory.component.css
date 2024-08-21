@@ -1,0 +1,44 @@
+.container {
+    max-width: 100%;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+
+.align {
+    align-items: end !important ;
+}
+
+.images {
+  width: inherit;
+}
+
+
+.mat-row {
+  margin-bottom: 10px; /* Reduzindo o espaçamento entre as linhas */
+}
+
+.mat-cell {
+  padding: 4px; /* Reduzindo o padding nas células para diminuir o espaçamento entre as colunas */
+}
+
+.mat-header-cell {
+  padding: 4px 8px; /* Ajuste do padding para as células de cabeçalho */
+}
+
+.extra-images-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Espaçamento entre as imagens */
+}
+
+.extra-image {
+  flex: 1 1 calc(50% - 8px); /* 50% da largura menos o espaçamento */
+  max-width: 48%;
+}

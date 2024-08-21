@@ -45,17 +45,23 @@
           <p mat-line> Dashboard </p>
         </a>
 
-        <a mat-list-item [routerLink]="['/inventario']" routerLinkActive="active">
+        <a mat-list-item [routerLink]="['/dataset']" routerLinkActive="active">
           <mat-icon mat-list-icon>
-            dataset
+            photo_library
           </mat-icon>
-          <p mat-line> Inventario </p>
+          <p mat-line> Dataset </p>
         </a>
         <a mat-list-item [routerLink]="['/arquivos']" routerLinkActive="active">
           <mat-icon mat-list-icon>
             file_open
           </mat-icon>
           <p mat-line> Arquivos </p>
+        </a>
+        <a mat-list-item [routerLink]="['/inventory']" routerLinkActive="active">
+          <mat-icon mat-list-icon>
+            dataset
+          </mat-icon>
+          <p mat-line> Inventario </p>
         </a>
 
         <a mat-list-item [routerLink]="['/auth/login']">
