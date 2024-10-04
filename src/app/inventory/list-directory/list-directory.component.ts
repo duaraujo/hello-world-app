@@ -51,7 +51,7 @@ export class ListDirectoryComponent implements OnInit {
         this.dataSource = data.map((item) => ({
           fullData: item,
           image: item.sample.fileName,
-          extraImages: item.sample.extraFileNames || [],
+          extraImages: item.sample.extraFileNamesBase64 || [],
           details: {
             fileName: item.sample.title || 'N/A',
             datetime: item.sample.datetime,
@@ -65,13 +65,20 @@ export class ListDirectoryComponent implements OnInit {
 
   onRowClicked(row: any) {
     this.selection.toggle(row);
+    const datetime = row.fullData.sample.datetime;
+    const regex = /^(\d{4}\.\d{2}\.\d{2})/;
+    const folderNameDate = datetime.match(regex)[1];
+    const folderNameDateFormatada = folderNameDate.replace(/\./g, "-");
+    const path = `${this.directoryPath}/${this.folderName}/${folderNameDateFormatada}`;
     const dialogRef = this.dialog.open(InfoDetailDialogComponent, {
+      panelClass: 'custom-dialog-container',
       width: '600px',
-      data: row.fullData 
+      data: {images: row.fullData, directoryPath: path} 
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog was closed');
+      this.getFiles();
     });
   }
 

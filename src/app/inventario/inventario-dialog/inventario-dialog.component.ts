@@ -39,22 +39,24 @@ export class InventarioDialogComponent implements OnInit {
   removeImage(): void {
     const imageName = this.data.images[this.currentIndex].name;
     const directoryPath = this.data.directoryPath;
+    console.log(imageName);
+    console.log(directoryPath);
 
-    this.deleteImageService.deleteImage(directoryPath, imageName).subscribe({
-      next: () => {
-        this.snackBar.open('Imagem removida com sucesso', 'Fechar', { duration: 3000 });
-        this.data.images.splice(this.currentIndex, 1);
-        if (this.currentIndex >= this.data.images.length) {
-          this.currentIndex = this.data.images.length - 1;
-        }
-        if (this.data.images.length === 0) {
-          this.dialogRef.close();
-        }
-      },
-      error: () => {
-        this.snackBar.open('Erro ao remover imagem', 'Fechar', { duration: 3000 });
-      },
-    });
+    // this.deleteImageService.deleteImage(directoryPath, imageName).subscribe({
+    //   next: () => {
+    //     this.snackBar.open('Imagem removida com sucesso', 'Fechar', { duration: 3000 });
+    //     this.data.images.splice(this.currentIndex, 1);
+    //     if (this.currentIndex >= this.data.images.length) {
+    //       this.currentIndex = this.data.images.length - 1;
+    //     }
+    //     if (this.data.images.length === 0) {
+    //       this.dialogRef.close();
+    //     }
+    //   },
+    //   error: () => {
+    //     this.snackBar.open('Erro ao remover imagem', 'Fechar', { duration: 3000 });
+    //   },
+    // });
   }
 
 }

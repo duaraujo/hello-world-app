@@ -5,6 +5,7 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ListDirectoryComponent } from './list-directory/list-directory.component';
 import { InfoDetailDialogComponent } from './info-detail-dialog/info-detail-dialog.component';
+import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
 
 
 
@@ -12,7 +13,8 @@ import { InfoDetailDialogComponent } from './info-detail-dialog/info-detail-dial
   declarations: [
     InventoryComponent,
     ListDirectoryComponent,
-    InfoDetailDialogComponent
+    InfoDetailDialogComponent,
+    ConfirmDeleteDialogComponent
   ],
   imports: [
     CommonModule,

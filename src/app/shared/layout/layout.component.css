@@ -19,6 +19,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  background-color: aliceblue !important;
 }
 
 .navbar-is-mobile .navbar {
@@ -61,4 +62,9 @@ a.mat-list-item.active {
 #push-bottom {
   position: absolute;
   bottom: 0;
+}
+
+.mat-toolbar.mat-primary {
+  background: #2ba5f7;
+  color: #fff;
 }

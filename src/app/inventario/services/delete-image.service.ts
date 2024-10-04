@@ -10,9 +10,9 @@ export class DeleteImageService {
 
   constructor(private http: HttpClient) {}
 
-  deleteImage(directoryPath: string, imageName: string): Observable<{ message: string }> {
+  deleteImage(directoryPath: string, imageName: string, fileJson: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${BASE_URL}/image`, {
-      params: { directoryPath, imageName },
+      params: { directoryPath, imageName, fileJson },
     });
   }
   
