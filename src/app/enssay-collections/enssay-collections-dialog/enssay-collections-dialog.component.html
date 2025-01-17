@@ -1,0 +1,40 @@
+<h1 mat-dialog-title class="dialog-title">
+    Dados Completos
+    <div class="example-button-container">
+      <button mat-mini-fab mat-dialog-close class="btn-close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </h1>
+  
+  
+  <mat-dialog-content class="mdc">
+    <div class="image-container">
+  
+      <!-- *ngIf="!isTextView || currentIndex > 0"  -->
+      <button class="btn-next-previous" mat-fab (click)="previous()">
+        <mat-icon>keyboard_double_arrow_left</mat-icon>
+      </button>
+  
+      <!-- <div *ngIf="isTextView">
+        <p><strong>App Name:</strong> alguma coisa</p>
+      </div> -->
+      <!-- *ngIf="!isTextView" -->
+      <div class="image-container">
+        <div class="ok">
+          <img [src]="'data:image/jpeg;base64,' + images[currentIndex].base64" alt="Image {{ currentIndex + 1 }}"
+            class="image-preview" />
+          <strong>{{images[currentIndex].name}}</strong> 
+        </div>
+      </div>
+      <!-- *ngIf="isTextView || currentIndex < images.length - 1" -->
+      <button class="btn-next-previous" mat-fab  (click)="next()">
+        <mat-icon>keyboard_double_arrow_right</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="actions">
+    <button mat-raised-button color="warn" *ngIf="currentIndex > 0" (click)="removeImage()">Remover</button>
+    <button mat-raised-button color="primary" *ngIf="currentIndex > 0" (click)="definirPrincipal()">Definir principal</button>
+  </mat-dialog-actions>

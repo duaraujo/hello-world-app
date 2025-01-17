@@ -28,6 +28,7 @@ export class InfoDetailDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    //console.log(this.data)
     if (this.data.images.sample.fileName) {
       this.images.push(this.data.images.sample.fileName);
     }

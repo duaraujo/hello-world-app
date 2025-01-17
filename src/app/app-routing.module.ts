@@ -33,6 +33,11 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'enssay',
+    loadChildren: () => import('./enssay-collections/enssay-collections.module').then(m => m.EnssayCollectionsModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
     pathMatch: 'full',

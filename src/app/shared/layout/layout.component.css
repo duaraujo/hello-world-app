@@ -65,6 +65,12 @@ a.mat-list-item.active {
 }
 
 .mat-toolbar.mat-primary {
-  background: #2ba5f7;
+  background: #428643;
   color: #fff;
+}
+
+a.mat-list-item {
+  color:#28562B;
+  font-weight: bold;
+
 }
