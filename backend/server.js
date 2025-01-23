@@ -10,11 +10,14 @@ const stat = util.promisify(fs.stat);
 const rename = util.promisify(fs.rename);
 const access = util.promisify(fs.access);
 
-const archiver = require('archiver');
+//const archiver = require('archiver');
 
+const downloadRoutes = require('./routes/downloadRoutes');
 
 const app = express();
+
 app.use(express.json());
+
 const PORT = 3000;
 
 app.use(cors({
@@ -23,42 +26,7 @@ app.use(cors({
   allowedHeaders: 'Content-Type,Authorization'
 }));
 
-
-app.get('/download', (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const directoryPath = `${pathDefault}/${req.query.directoryPath}`;
-
-  console.log(directoryPath)
-  if (!fs.existsSync(directoryPath)) {
-    return res.status(404).send('Directory not found');
-  }
-
-  const zipFileName = `${path.basename(directoryPath)}.zip`;
-  const zipFilePath = path.join(__dirname, zipFileName);
-
-  res.setHeader('Content-Disposition', `attachment; filename="${zipFileName}"`);
-  res.setHeader('Content-Type', 'application/zip');
-
-  // Criar um arquivo ZIP de forma stream
-  const archive = archiver('zip', {
-    zlib: { level: 9 }, // Nível de compressão
-  });
-
-  // Encaminhar o arquivo ZIP para a resposta HTTP
-  archive.pipe(res);
-
-  // Adicionar todos os arquivos e pastas do diretório ao arquivo ZIP
-  archive.directory(directoryPath, false);
-
-  // Finalizar o arquivo ZIP
-  archive.finalize();
-
-  // Tratamento de erros
-  archive.on('error', (err) => {
-    res.status(500).send(`Error creating ZIP file: ${err.message}`);
-  });
-});
-
+app.use(downloadRoutes);
 
 
 app.get('/new-folders', (req, res) => {
@@ -127,6 +95,92 @@ app.get('/folders', (req, res) => {
   });
 });
 
+app.delete('/delete-image', async (req, res) => {
+  const pathDefault = '/home/eduardo_araujo/Documentos/project';
+  const { directoryPath, imageName } = req.query;
+
+  if (!directoryPath || !imageName) {
+    return res.status(400).json({ error: 'Parâmetros inválidos' });
+  }
+
+  try {
+    const result = await deleteImage(`${pathDefault}/${directoryPath}`, imageName);
+    res.json({ message: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao deletar a imagem' });
+  }
+});
+
+app.get('/arquivos', (req, res) => {
+  const pathDefault = '/home/eduardo_araujo/Documentos/project';
+  const directoryPath = `${pathDefault}/${req.query.urlPath}`;
+
+  try {
+    const files = fs.readdirSync(directoryPath);
+
+    const jsonFiles = files.filter(file => typeof file === 'string' && file.endsWith('.json'));
+
+    const fileDetails = jsonFiles.map(file => {
+      const filePath = path.join(directoryPath, file);
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      const fileContentBase64 = Buffer.from(fileContent).toString('base64');
+      return {
+        fileName: file,
+        contentBase64: fileContentBase64
+      };
+    });
+
+    res.json(fileDetails);
+  } catch (err) {
+    return res.status(500).json({ error: 'Unable to scan directory' });
+  }
+});
+
+app.delete('/image', (req, res) => {
+  const pathDefault = '/home/eduardo_araujo/Documentos/project';
+  const { directoryPath, imageName, fileJson } = req.query;
+
+  const imagePath = path.join(pathDefault, directoryPath, imageName);
+  const filePath = path.join(pathDefault, directoryPath, fileJson);
+
+  // Deletar a imagem
+  fs.unlink(imagePath, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Unable to delete image' });
+    }
+
+    // Ler o arquivo JSON
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        return res.status(500).json({ error: 'Unable to read JSON file' });
+      }
+
+      try {
+        const jsonData = JSON.parse(data);
+
+        // Verificar se o imageName está em extraFileNames e remover
+        const index = jsonData.sample.extraFileNames.indexOf(imageName);
+        if (index !== -1) {
+          jsonData.sample.extraFileNames.splice(index, 1); // Remover o arquivo da lista
+        } else {
+          return res.status(404).json({ error: 'Image not found in extraFileNames' });
+        }
+
+        // Escrever o JSON atualizado no arquivo
+        fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+          if (err) {
+            return res.status(500).json({ error: 'Unable to update JSON file' });
+          }
+
+          res.status(200).json({ message: 'Image deleted and JSON updated successfully' });
+        });
+      } catch (parseErr) {
+        return res.status(500).json({ error: 'Error parsing JSON file' });
+      }
+    });
+  });
+});
 
 app.get('/get-inference-training', (req, res) => {
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
@@ -299,25 +353,6 @@ function deleteImage(directoryPath, imageName) {
   });
 }
 
-
-app.delete('/delete-image', async (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const { directoryPath, imageName } = req.query;
-
-  if (!directoryPath || !imageName) {
-    return res.status(400).json({ error: 'Parâmetros inválidos' });
-  }
-
-  try {
-    const result = await deleteImage(`${pathDefault}/${directoryPath}`, imageName);
-    res.json({ message: result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao deletar a imagem' });
-  }
-});
-
-
 async function findAndPromoteImage(directoryPath, newMainImageName) {
   return new Promise((resolve, reject) => {
     fs.readdir(directoryPath, (err, items) => {
@@ -426,78 +461,6 @@ app.put('/promote-image', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Erro ao promover a imagem' });
   }
-});
-
-
-
-app.get('/arquivos', (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const directoryPath = `${pathDefault}/${req.query.urlPath}`;
-
-  try {
-    const files = fs.readdirSync(directoryPath);
-
-    const jsonFiles = files.filter(file => typeof file === 'string' && file.endsWith('.json'));
-
-    const fileDetails = jsonFiles.map(file => {
-      const filePath = path.join(directoryPath, file);
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-      const fileContentBase64 = Buffer.from(fileContent).toString('base64');
-      return {
-        fileName: file,
-        contentBase64: fileContentBase64
-      };
-    });
-
-    res.json(fileDetails);
-  } catch (err) {
-    return res.status(500).json({ error: 'Unable to scan directory' });
-  }
-});
-
-app.delete('/image', (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const { directoryPath, imageName, fileJson } = req.query;
-
-  const imagePath = path.join(pathDefault, directoryPath, imageName);
-  const filePath = path.join(pathDefault, directoryPath, fileJson);
-
-  // Deletar a imagem
-  fs.unlink(imagePath, (err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Unable to delete image' });
-    }
-
-    // Ler o arquivo JSON
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        return res.status(500).json({ error: 'Unable to read JSON file' });
-      }
-
-      try {
-        const jsonData = JSON.parse(data);
-
-        // Verificar se o imageName está em extraFileNames e remover
-        const index = jsonData.sample.extraFileNames.indexOf(imageName);
-        if (index !== -1) {
-          jsonData.sample.extraFileNames.splice(index, 1); // Remover o arquivo da lista
-        } else {
-          return res.status(404).json({ error: 'Image not found in extraFileNames' });
-        }
-
-        // Escrever o JSON atualizado no arquivo
-        fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
-          if (err) {
-            return res.status(500).json({ error: 'Unable to update JSON file' });
-          }
-
-          res.status(200).json({ message: 'Image deleted and JSON updated successfully' });
-        });
-      } catch (parseErr) {
-        return res.status(500).json({ error: 'Error parsing JSON file' });
-      }
-    });
-  });
 });
 
 
