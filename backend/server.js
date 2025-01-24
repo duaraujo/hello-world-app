@@ -10,9 +10,11 @@ const stat = util.promisify(fs.stat);
 const rename = util.promisify(fs.rename);
 const access = util.promisify(fs.access);
 
-//const archiver = require('archiver');
 
 const downloadRoutes = require('./routes/downloadRoutes');
+const fileRoutes = require('./routes/arquivoRoutes');
+const folderRoutes = require('./routes/folderRoutes');
+
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.use(cors({
 }));
 
 app.use(downloadRoutes);
+app.use(fileRoutes);
+app.use(folderRoutes);
 
 
 app.get('/new-folders', (req, res) => {
@@ -77,24 +81,6 @@ app.get('/new-folders', (req, res) => {
 });
 
 
-app.get('/folders', (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const directoryPath = `${pathDefault}/${req.query.directoryPath}`;
-  if (!directoryPath) {
-    return res.status(400).send('Path is required');
-  }
-  fs.readdir(directoryPath, { withFileTypes: true }, (err, files) => {
-    if (err) {
-      return res.status(500).send(`Unable to scan directory: ${err}`);
-    }
-    const folders = files
-      .filter((file) => file.isDirectory())
-      .map((file) => file.name);
-
-    res.json(folders);
-  });
-});
-
 app.delete('/delete-image', async (req, res) => {
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
   const { directoryPath, imageName } = req.query;
@@ -112,30 +98,6 @@ app.delete('/delete-image', async (req, res) => {
   }
 });
 
-app.get('/arquivos', (req, res) => {
-  const pathDefault = '/home/eduardo_araujo/Documentos/project';
-  const directoryPath = `${pathDefault}/${req.query.urlPath}`;
-
-  try {
-    const files = fs.readdirSync(directoryPath);
-
-    const jsonFiles = files.filter(file => typeof file === 'string' && file.endsWith('.json'));
-
-    const fileDetails = jsonFiles.map(file => {
-      const filePath = path.join(directoryPath, file);
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-      const fileContentBase64 = Buffer.from(fileContent).toString('base64');
-      return {
-        fileName: file,
-        contentBase64: fileContentBase64
-      };
-    });
-
-    res.json(fileDetails);
-  } catch (err) {
-    return res.status(500).json({ error: 'Unable to scan directory' });
-  }
-});
 
 app.delete('/image', (req, res) => {
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
