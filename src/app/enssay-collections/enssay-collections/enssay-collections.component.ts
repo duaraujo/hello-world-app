@@ -184,6 +184,28 @@ export class EnssayCollectionsComponent implements OnInit {
   open(path: string) {
     if (this.directoryPath.trim()) {
       this.fullPath = `${this.directoryPath}${path}`;
+      this.getFoldersService.getImageNewApi(this.fullPath).subscribe((data: any[]) => {
+        console.log("Dados recebidos:", data);
+  
+        // Transformação dos dados
+        this.dataSourceImages = data.map(item => ({
+          analystName: item.analystName,
+          image: item.sample.base64, // Imagem principal
+          extraImages: Array.isArray(item.extraFileNames)
+            ? item.extraFileNames.map((file: { base64: any; }) => file.base64) // Lista de base64s
+            : [item.extraFileNames.base64] // Caso seja um único objeto
+        }));
+  
+        console.log("Dados processados:", this.dataSourceImages);
+      });
+    } else {
+      console.warn('Insira um caminho de diretório válido');
+    }
+  }
+
+  open2(path: string) {
+    if (this.directoryPath.trim()) {
+      this.fullPath = `${this.directoryPath}${path}`;
       this.getFoldersService
         .getFolders(this.fullPath)
         .subscribe((data: any[]) => {

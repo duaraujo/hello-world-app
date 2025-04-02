@@ -107,6 +107,18 @@
 
             <ng-container matColumnDef="extraImages">
               <mat-header-cell *matHeaderCellDef> Imagens Extras </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <div class="extra-images-container">
+                  <div *ngFor="let extraImage of element.extraImages" class="extra-image">
+                    <img [src]="'data:image/jpeg;base64,' + extraImage" 
+                         style="max-width: 50%; height: auto;" 
+                         alt="Extra Image" />
+                  </div>
+                </div>
+              </mat-cell>
+            </ng-container>
+            <!-- <ng-container matColumnDef="extraImages">
+              <mat-header-cell *matHeaderCellDef> Imagens Extras </mat-header-cell>
               <mat-cell *matCellDef="let element" (click)="onRowClicked(element)">
                 <div class="extra-images-container">
                   <div *ngFor="let extraImage of element.extraImages" class="extra-image">
@@ -115,14 +127,14 @@
                   </div>
                 </div>
               </mat-cell>
-            </ng-container>
+            </ng-container> -->
 
             <ng-container matColumnDef="infos">
               <th mat-header-cell *matHeaderCellDef> Informações </th>
               <mat-cell *matCellDef="let element">
                 <div class="info-container">
                   <div><strong>Analyst Name:</strong> {{ analystName }}</div>
-                  <div><strong>Date:</strong> {{ datatime | date: 'short' }}</div>
+                  <!-- <div><strong>Date:</strong> {{ datatime | date: 'short' }}</div> -->
                 </div>
               </mat-cell>
             </ng-container>
