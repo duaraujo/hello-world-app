@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { UpdateDialogComponent } from '../update-dialog/update-dialog.component';
 import { FileService } from 'src/app/files/services/file.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-enssay-collections',
@@ -51,7 +52,8 @@ export class EnssayCollectionsComponent implements OnInit {
     private getInferenceTrainingService: GetInferenceTrainingService,
     public dialog: MatDialog,
     private updateDialog: MatDialog,
-    private fileService: FileService
+    private fileService: FileService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -144,6 +146,10 @@ export class EnssayCollectionsComponent implements OnInit {
     }
   }
 
+  changeLanguage(lang: string) {
+    this.translate.use(lang);
+  }
+  
   onRowClicked(row: any) {
     this.selectionImages.toggle(row);
     const dialogRef = this.dialog.open(EnssayCollectionsDialogComponent, {

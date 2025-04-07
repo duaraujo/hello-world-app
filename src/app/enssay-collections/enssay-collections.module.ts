@@ -10,6 +10,7 @@ import { EnssayCollectionsDialogComponent } from './enssay-collections-dialog/en
 import { DeleteImageService } from './services/delete-image.service';
 import { ConfirmMainDialogComponent } from './confirm-main-dialog/confirm-main-dialog.component';
 import { UpdateDialogComponent } from './update-dialog/update-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -24,7 +25,8 @@ import { UpdateDialogComponent } from './update-dialog/update-dialog.component';
   imports: [
     CommonModule,
     EnssayCollectionsRoutingModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   providers:[NewGetFoldersService, GetInferenceTrainingService, DeleteImageService]
 })
