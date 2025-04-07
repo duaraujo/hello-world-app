@@ -55,25 +55,35 @@ export class EnssayCollectionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: string, filter: string) => {
-      return data.toLowerCase().includes(filter);
-    };
-
-    this.filterControl.valueChanges
-      .pipe(
-        startWith(''),
-        map((value) => value.trim().toLowerCase())
-      )
-      .subscribe((filterValue) => {
-        this.dataSource.filter = filterValue;
+    this.getFoldersService
+      .getFolders(this.directoryPath)
+      .subscribe((data: string[]) => {
+        this.dataSource.data = data;
+        this.dataSource.filter = '';
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
       });
+
+    // this.dataSource.filterPredicate = (data: string, filter: string) => {
+    //   return data.toLowerCase().includes(filter);
+    // };
+
+    // this.filterControl.valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map((value) => value.trim().toLowerCase())
+    //   )
+    //   .subscribe((filterValue) => {
+    //     this.dataSource.filter = filterValue;
+    //   });
   }
 
   getInferenceTraining(element: any, inference: boolean) {
     this.elementSelected = element;
     this.inferenceSelected = inference;
 
-    let fullPath = this.fullPath +'/'+ element;
+    let fullPath = this.fullPath + '/' + element;
     this.getInferenceTrainingService
       .getImages(fullPath, inference)
       .subscribe((data: any) => {
@@ -166,11 +176,9 @@ export class EnssayCollectionsComponent implements OnInit {
       }
     );
   }
-  
 
   download2(path: string) {
-    
-    let fp = this.fullPath +'/'+ path;
+    let fp = this.fullPath + '/' + path;
     this.getFoldersService.download(fp).subscribe(
       (file: Blob) => {
         saveAs(file, 'arquivo.zip');
@@ -182,22 +190,53 @@ export class EnssayCollectionsComponent implements OnInit {
   }
 
   open(path: string) {
+    this.getFoldersService
+      .getCapturesTaken(path)
+      .subscribe((data: any[]) => {
+        this.dataSourceAnalitos = data;
+        console.log('Dados recebidos:', data);
+      });
+
+
+      this.getFoldersService
+        .getImageNewApi('')
+        .subscribe((data: any[]) => {
+          console.log('Dados recebidos:', data);
+
+          // Transformação dos dados
+          this.dataSourceImages = data.map((item) => ({
+            analystName: item.analystName,
+            image: item.sample.base64, // Imagem principal
+            extraImages: Array.isArray(item.extraFileNames)
+              ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
+              : [item.extraFileNames.base64], // Caso seja um único objeto
+          }));
+
+          console.log('Dados processados:', this.dataSourceImages);
+        });
+
+  }
+
+  open3(path: string) {
+    console.log(path);
     if (this.directoryPath.trim()) {
       this.fullPath = `${this.directoryPath}${path}`;
-      this.getFoldersService.getImageNewApi(this.fullPath).subscribe((data: any[]) => {
-        console.log("Dados recebidos:", data);
-  
-        // Transformação dos dados
-        this.dataSourceImages = data.map(item => ({
-          analystName: item.analystName,
-          image: item.sample.base64, // Imagem principal
-          extraImages: Array.isArray(item.extraFileNames)
-            ? item.extraFileNames.map((file: { base64: any; }) => file.base64) // Lista de base64s
-            : [item.extraFileNames.base64] // Caso seja um único objeto
-        }));
-  
-        console.log("Dados processados:", this.dataSourceImages);
-      });
+      this.getFoldersService
+        .getImageNewApi(this.fullPath)
+        .subscribe((data: any[]) => {
+          console.log('Dados recebidos:', data);
+
+          // Transformação dos dados
+          this.dataSourceImages = data.map((item) => ({
+            analystName: item.analystName,
+            image: item.sample.base64, // Imagem principal
+            extraImages: Array.isArray(item.extraFileNames)
+              ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
+              : [item.extraFileNames.base64], // Caso seja um único objeto
+          }));
+
+          console.log('Dados processados:', this.dataSourceImages);
+        });
     } else {
       console.warn('Insira um caminho de diretório válido');
     }

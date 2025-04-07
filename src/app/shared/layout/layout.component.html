@@ -8,7 +8,7 @@
 
     <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
       <h1>
-        Projeto Petrobras
+        Análises Químicas
       </h1>
     </a>
 
@@ -41,35 +41,15 @@
 
         <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
           <mat-icon mat-list-icon>
-            dashboard
+            home
           </mat-icon>
-          <p mat-line> DASHBOARD </p>
+          <p mat-line> TELA INICIAL </p>
         </a>
-
-        <a mat-list-item [routerLink]="['/dataset']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            photo_library
-          </mat-icon>
-          <p mat-line> DATASET </p>
-        </a>
-        <a mat-list-item [routerLink]="['/arquivos']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            file_open
-          </mat-icon>
-          <p mat-line> ARQUIVOS </p>
-        </a>
-        <a mat-list-item [routerLink]="['/inventory']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            dataset
-          </mat-icon>
-          <p mat-line> INVENTARIO </p>
-        </a>
-
         <a mat-list-item [routerLink]="['/enssay']" routerLinkActive="active">
           <mat-icon mat-list-icon>
-            dataset
+            science
           </mat-icon>
-          <p mat-line> COLEÇÃO DE ENSAIOS </p>
+          <p mat-line> COLEÇÕES DE ENSAIOS </p>
         </a>
 
         <a mat-list-item [routerLink]="['/auth/login']">

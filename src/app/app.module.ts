@@ -9,12 +9,10 @@ import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { LoggerModule } from 'ngx-logger';
 import { environment } from '../environments/environment';
-import { InventarioDialogComponent } from './inventario/inventario-dialog/inventario-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InventarioDialogComponent,
   ],
   imports: [
     BrowserModule,

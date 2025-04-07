@@ -86,3 +86,58 @@ th.mat-sort-header-sorted {
     justify-content: center; /* Alinha os botões no centro em telas menores */
   }
 }
+
+
+
+
+.custom-form-field {
+  background: #ece6f0;
+  border-radius: 25px;
+  padding: 5px;
+
+  .mat-form-field-wrapper {
+    padding: 0;
+  }
+
+  .mat-form-field-flex {
+    background: #ece6f0;
+    border-radius: 25px;
+    padding-left: 10px;
+  }
+
+  .mat-form-field-outline {
+    border-radius: 25px;
+  }
+
+  .mat-icon {
+    color: #555;
+  }
+}
+
+.mat-display-1 {
+  color: #087e40;
+  text-align: center;
+}
+
+.folder-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  font-size: 0.85em; /* Tamanho menor para a descrição */
+  color: #666; /* Cor mais suave */
+}
+
+.collection-name {
+  color: #1d7c54;
+  font-size: large;
+}
+
+.mat-row {
+  height: 60px; /* Ajuste a altura das linhas */
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 16px 16px; /* Adiciona espaçamento interno */
+}

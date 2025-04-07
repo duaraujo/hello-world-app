@@ -10,6 +10,10 @@ export class NewGetFoldersService {
 
   constructor(private http: HttpClient) {}
 
+  getCapturesTaken(folder_name: string): Observable<string[]> {
+    const params = new HttpParams().set('folder_name', folder_name);
+    return this.http.get<string[]>(`${NEW_BASE_URL}captures-taken`, {params});
+  }
   
   getImageNewApi(directoryPath: string): Observable<string[]> {
     //const params = new HttpParams().set('directoryPath', directoryPath);
@@ -18,7 +22,7 @@ export class NewGetFoldersService {
   
   getFolders(directoryPath: string): Observable<string[]> {
     //const params = new HttpParams().set('directoryPath', directoryPath);, { params }
-    return this.http.get<string[]>(`${NEW_BASE_URL}new-folders`);
+    return this.http.get<string[]>(`${NEW_BASE_URL}enssay-collections`);
   }
 
   getImages(folderName: string): Observable<{ name: string; base64: string }[]> {
@@ -34,5 +38,6 @@ export class NewGetFoldersService {
       responseType: 'blob' as 'json',
     });
   }
+
 
 }
