@@ -1,29 +1,29 @@
-from http.server import SimpleHTTPRequestHandler
-from socketserver import TCPServer
+#from http.server import SimpleHTTPRequestHandler
+#from socketserver import TCPServer
 from threading import Thread
 from typing import Optional
 import os
 
-from flask import Flask,request, jsonify
+from flask import Flask,request, jsonify, send_from_directory
 from flask_cors import CORS 
 import json
 import base64
 from PIL import Image
 from io import BytesIO
 
-# from android.content import ContentResolver
-# from android.net import Uri
-#from chaquopy import android
-# android_context = None
 
 DIRECTORY = os.path.join(os.path.dirname(__file__), "dist/hello-world-app")
 
-server: Optional[TCPServer] = None
+#server: Optional[TCPServer] = None
+
+server = "stopped" 
 
 flask_thread: Optional[Thread] = None
 
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
 
 storage_data = {"uri": None}
 
@@ -31,11 +31,12 @@ def set_storage_uri(uri):
     storage_data["uri"] = uri
 
 #storage_uri = storage_data["uri"]
-#BASE_PATH = storage_uri+"/AssaysCollection"
-#BASE_PATH = "/storage/emulated/0/Documents/AssaysCollection"
+#BASE_PATH = storage_data["uri"]+"/AssaysCollection"
+#BASE_PATH = os.path.join(storage_data["uri"], "AssaysCollection")
+BASE_PATH = "/storage/emulated/0/Teste/AssaysCollection"
 #BASE_PATH2 = "/storage/emulated/0/Documents/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
 
-BASE_PATH = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection"
+#BASE_PATH = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection"
 BASE_PATH2 = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
 
 # --------------------- Backend ------------------
@@ -285,6 +286,16 @@ def find_and_parse_folders(start_path, use_training):
 
 
 
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_angular(path):
+    if path != "" and os.path.exists(os.path.join(DIRECTORY, path)):
+        return send_from_directory(DIRECTORY, path)
+    else:
+        return send_from_directory(DIRECTORY, "index.html")
+
+
+
 
 @app.route("/uri", methods=["GET"])
 def get_uri():
@@ -296,47 +307,71 @@ def get_uri():
 def teste():
     return "Hello world"
 
+@app.route("/status", methods=["GET"])
+def get_status():
+    return jsonify({"server": server})
 
+@app.route("/shutdown", methods=["GET"])
+def shutdown():
+    func = request.environ.get("werkzeug.server.shutdown")
+    if func is None:
+        raise RuntimeError("Não está rodando com o servidor Werkzeug")
+    func()
+    return "Servidor encerrado"
 
 # -------------------- Frontend ----------------------
 
-class Handler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
+# class Handler(SimpleHTTPRequestHandler):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
 
 def get_port() -> int:
-    return 4200
+    return 3000
 
 def get_api_port():
     return 3000 
 
+# def is_running() -> bool:
+#     return server != None
+
 def is_running() -> bool:
-    return server != None
+    return flask_thread is not None and flask_thread.is_alive()
 
 def run_flask():
     """Função para rodar o Flask em uma thread separada."""
     app.run(host="0.0.0.0", port=get_api_port(), debug=False, use_reloader=False)
 
 
+# def start() -> None:
+#     global server, flask_thread
+
+#     if not is_running():
+#         # Iniciar o servidor Angular
+#         server = TCPServer(("0.0.0.0", get_port()), Handler)
+#         Thread(target=lambda: server.serve_forever(), daemon=True).start()
+
+#         # Iniciar o backend Flask em uma thread separada
+#         flask_thread = Thread(target=run_flask, daemon=True)
+#         flask_thread.start()
+
 def start() -> None:
-    global server, flask_thread
+    global flask_thread
 
     if not is_running():
-        # Iniciar o servidor Angular
-        # server = TCPServer(("0.0.0.0", get_port()), Handler)
-        # Thread(target=lambda: server.serve_forever(), daemon=True).start()
-
-        # Iniciar o backend Flask em uma thread separada
         flask_thread = Thread(target=run_flask, daemon=True)
         flask_thread.start()
-
+        server = "running"
 
 def stop() -> None:
-    global server
+    global flask_thread, server
+
     if is_running():
-        server.shutdown()
+        try:
+            # Envia requisição para o endpoint de shutdown
+            requests.get("http://127.0.0.1:5000/shutdown")
+        except Exception as e:
+            print("Erro ao parar o servidor:", e)
 
-
-if __name__ == "__main__":
-    run_flask()
+        flask_thread = None
+        server = "stopped"

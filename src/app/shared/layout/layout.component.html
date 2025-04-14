@@ -8,7 +8,7 @@
 
     <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
       <h1>
-        Análises Químicas
+        {{'menu.title' | translate}}
       </h1>
     </a>
 
@@ -20,13 +20,29 @@
         {{userName}}
       </span>
     </button>
-    
+
     <mat-menu #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
 
       <a mat-menu-item [routerLink]="['/auth/login']">
         <mat-icon>exit_to_app</mat-icon>
         <span>Sair</span>
       </a>
+
+      <button mat-menu-item (click)="changeLanguage('pt')">
+        <img src="assets/flags/br.svg" alt="PT" width="24" height="16" style="margin-right: 8px;">
+        <span [ngStyle]="{ 'font-weight': currentLang === 'pt' ? 'bold' : 'normal' }">
+          Português
+          <mat-icon *ngIf="currentLang === 'pt'" style="margin-left: 8px;">check</mat-icon>
+        </span>
+      </button>
+
+      <button mat-menu-item (click)="changeLanguage('en')">
+        <img src="assets/flags/us.svg" alt="EN" width="24" height="16" style="margin-right: 8px;">
+        <span [ngStyle]="{ 'font-weight': currentLang === 'en' ? 'bold' : 'normal' }">
+          English
+          <mat-icon *ngIf="currentLang === 'en'" style="margin-left: 8px;">check</mat-icon>
+        </span>
+      </button>
 
     </mat-menu>
 
@@ -40,24 +56,21 @@
         <h3 mat-subheader>Home</h3>
 
         <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            home
-          </mat-icon>
-          <p mat-line> TELA INICIAL </p>
+          <mat-icon matListIcon>home</mat-icon>
+          <span matLine> {{'menu.homeScreen' | translate}}</span>
         </a>
+
         <a mat-list-item [routerLink]="['/enssay']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            science
-          </mat-icon>
-          <p mat-line> COLEÇÕES DE ENSAIOS </p>
+          <mat-icon matListIcon>science</mat-icon>
+          <span matLine> {{'menu.assaysCollections' | translate}}</span>
         </a>
 
         <a mat-list-item [routerLink]="['/auth/login']">
-          <mat-icon mat-list-icon>exit_to_app</mat-icon>
-          <p mat-line> SAIR </p>
+          <mat-icon matListIcon>exit_to_app</mat-icon>
+          <span matLine> {{'menu.exit' | translate}}</span>
         </a>
-
       </mat-nav-list>
+
 
     </mat-sidenav>
 

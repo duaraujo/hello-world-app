@@ -141,3 +141,27 @@ th.mat-sort-header-sorted {
 .mat-cell, .mat-header-cell {
   padding: 16px 16px; /* Adiciona espaçamento interno */
 }
+
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.image-card {
+  width: 150px;
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+}
+
+.info-section {
+  margin-bottom: 1rem;
+  p {
+    margin: 4px 0;
+  }
+}

@@ -2,18 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ROOT_PATH } from '../../constants/app.constants';
 import { NewGetFoldersService } from '../services/new-get-folders.service';
 import { GetInferenceTrainingService } from '../services/get-inference-training.service';
-import { EnssayCollectionsDialogComponent } from '../enssay-collections-dialog/enssay-collections-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { UpdateDialogComponent } from '../update-dialog/update-dialog.component';
-import { FileService } from 'src/app/files/services/file.service';
-import { TranslateService } from '@ngx-translate/core';
+import { FileService } from '../services/file.service';
 
 @Component({
   selector: 'app-enssay-collections',
@@ -21,6 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./enssay-collections.component.css'],
 })
 export class EnssayCollectionsComponent implements OnInit {
+  folderSelected = '';
   directoryPath: string = ROOT_PATH + '2/';
   displayedColumns: string[] = ['folder', 'actions'];
   selection = new SelectionModel<string>(false, []);
@@ -45,6 +42,8 @@ export class EnssayCollectionsComponent implements OnInit {
   files: any[] = [];
   directoryPathUpdateFile: string = 'datasets/arquivos';
 
+  dataList: any[] = [];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -53,7 +52,6 @@ export class EnssayCollectionsComponent implements OnInit {
     public dialog: MatDialog,
     private updateDialog: MatDialog,
     private fileService: FileService,
-    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -66,22 +64,17 @@ export class EnssayCollectionsComponent implements OnInit {
           this.dataSource.paginator = this.paginator;
         }
       });
-
-    // this.dataSource.filterPredicate = (data: string, filter: string) => {
-    //   return data.toLowerCase().includes(filter);
-    // };
-
-    // this.filterControl.valueChanges
-    //   .pipe(
-    //     startWith(''),
-    //     map((value) => value.trim().toLowerCase())
-    //   )
-    //   .subscribe((filterValue) => {
-    //     this.dataSource.filter = filterValue;
-    //   });
   }
 
-  getInferenceTraining(element: any, inference: boolean) {
+  getInferenceTraining(element: any, useTraining: boolean) {
+    const path = `${this.folderSelected}/${element}`;
+    this.getFoldersService.parseJsons(path, useTraining)
+    .subscribe((data) => {
+      this.dataList = data;
+    });
+  }
+
+  getInferenceTrainingg(element: any, inference: boolean) {
     this.elementSelected = element;
     this.inferenceSelected = inference;
 
@@ -145,23 +138,9 @@ export class EnssayCollectionsComponent implements OnInit {
       console.warn('Insira um caminho de diretório válido');
     }
   }
-
-  changeLanguage(lang: string) {
-    this.translate.use(lang);
-  }
   
   onRowClicked(row: any) {
     this.selectionImages.toggle(row);
-    const dialogRef = this.dialog.open(EnssayCollectionsDialogComponent, {
-      panelClass: 'custom-dialog-container',
-      width: '600px',
-      data: { images: this.dataResultGetImages, directoryPath: this.fullPath },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('Dialog was closed');
-      this.getInferenceTraining(this.elementSelected, this.inferenceSelected);
-    });
   }
 
   clearFolders() {
@@ -196,6 +175,7 @@ export class EnssayCollectionsComponent implements OnInit {
   }
 
   open(path: string) {
+    this.folderSelected = path;
     this.getFoldersService
       .getCapturesTaken(path)
       .subscribe((data: any[]) => {
@@ -204,22 +184,22 @@ export class EnssayCollectionsComponent implements OnInit {
       });
 
 
-      this.getFoldersService
-        .getImageNewApi('')
-        .subscribe((data: any[]) => {
-          console.log('Dados recebidos:', data);
+      // this.getFoldersService
+      //   .getImageNewApi('')
+      //   .subscribe((data: any[]) => {
+      //     console.log('Dados recebidos:', data);
 
-          // Transformação dos dados
-          this.dataSourceImages = data.map((item) => ({
-            analystName: item.analystName,
-            image: item.sample.base64, // Imagem principal
-            extraImages: Array.isArray(item.extraFileNames)
-              ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
-              : [item.extraFileNames.base64], // Caso seja um único objeto
-          }));
+      //     // Transformação dos dados
+      //     this.dataSourceImages = data.map((item) => ({
+      //       analystName: item.analystName,
+      //       image: item.sample.base64, // Imagem principal
+      //       extraImages: Array.isArray(item.extraFileNames)
+      //         ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
+      //         : [item.extraFileNames.base64], // Caso seja um único objeto
+      //     }));
 
-          console.log('Dados processados:', this.dataSourceImages);
-        });
+      //     console.log('Dados processados:', this.dataSourceImages);
+      //   });
 
   }
 
@@ -268,13 +248,7 @@ export class EnssayCollectionsComponent implements OnInit {
       this.files = files;
       let data = this.files[0];
       const fileData = JSON.parse(atob(data.contentBase64));
-      const dialogRefUpdate = this.updateDialog.open(UpdateDialogComponent, {
-        width: '400px',
-        data: { data: fileData, urlPath: fp },
-      });
-      dialogRefUpdate.afterClosed().subscribe(() => {
-        this.getFolders();
-      });
+
     });
   }
 }

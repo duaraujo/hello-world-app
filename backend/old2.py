@@ -31,12 +31,13 @@ def set_storage_uri(uri):
     storage_data["uri"] = uri
 
 #storage_uri = storage_data["uri"]
-#BASE_PATH = storage_uri+"/AssaysCollection"
-#BASE_PATH = "/storage/emulated/0/Documents/AssaysCollection"
+#BASE_PATH = storage_data["uri"]+"/AssaysCollection"
+#BASE_PATH = os.path.join(storage_data["uri"], "AssaysCollection")
+BASE_PATH = "/storage/emulated/0/Teste/AssaysCollection"
 #BASE_PATH2 = "/storage/emulated/0/Documents/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
 
-BASE_PATH = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection"
-BASE_PATH2 = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
+#BASE_PATH = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection"
+#BASE_PATH2 = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
 
 # --------------------- Backend ------------------
 
@@ -324,8 +325,8 @@ def start() -> None:
 
     if not is_running():
         # Iniciar o servidor Angular
-        # server = TCPServer(("0.0.0.0", get_port()), Handler)
-        # Thread(target=lambda: server.serve_forever(), daemon=True).start()
+        server = TCPServer(("0.0.0.0", get_port()), Handler)
+        Thread(target=lambda: server.serve_forever(), daemon=True).start()
 
         # Iniciar o backend Flask em uma thread separada
         flask_thread = Thread(target=run_flask, daemon=True)
@@ -336,7 +337,3 @@ def stop() -> None:
     global server
     if is_running():
         server.shutdown()
-
-
-if __name__ == "__main__":
-    run_flask()

@@ -32,11 +32,8 @@ def set_storage_uri(uri):
 
 #storage_uri = storage_data["uri"]
 #BASE_PATH = storage_uri+"/AssaysCollection"
-#BASE_PATH = "/storage/emulated/0/Documents/AssaysCollection"
-#BASE_PATH2 = "/storage/emulated/0/Documents/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
-
-BASE_PATH = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection"
-BASE_PATH2 = "/home/eduardo_araujo/Documentos/project/downloads/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
+BASE_PATH = "/storage/emulated/0/Documents/AssaysCollection"
+BASE_PATH2 = "/storage/emulated/0/Documents/AssaysCollection/5377547b-ec51-4a11-a66b-5c7bf14a486a"
 
 # --------------------- Backend ------------------
 
@@ -153,7 +150,8 @@ def get_inference_training():
     
 
 
-def get_enssay_collections():
+
+def get_new_folders():
     results = []
     for folder_name in os.listdir(BASE_PATH):
         folder_path = os.path.join(BASE_PATH, folder_name)
@@ -165,12 +163,10 @@ def get_enssay_collections():
                     data = json.load(json_file)
 
                 name = data.get("name", "")
-                description = data.get("description", "")
 
                 results.append({
                     "nameFolder": folder_name,
-                    "name": name,
-                    "description": description,
+                    "name": name
                 })
 
             except Exception as e:
@@ -178,109 +174,10 @@ def get_enssay_collections():
 
     return results
 
-@app.route("/enssay-collections", methods=["GET"])
-def get_enssay_collections_endpoint():
-    data = get_enssay_collections()
+@app.route("/new-folders", methods=["GET"])
+def get_new_folders_endpoint():
+    data = get_new_folders()
     return jsonify(data)
-
-
-
-
-
-
-@app.route("/captures-taken", methods=["GET"])
-def get_captures_taken_endpoint():
-    folder_name = request.args.get("folder_name")
-    if not folder_name:
-        return jsonify({"error": "Parâmetro folder_name é obrigatório"}), 400
-    data = get_captures_taken(folder_name)
-    return jsonify(data)
-
-def get_captures_taken(folder_name):
-    folder_path = os.path.join(BASE_PATH, folder_name)
-    result = []
-
-    if os.path.isdir(folder_path):
-        for subfolder in os.listdir(folder_path):
-            subfolder_path = os.path.join(folder_path, subfolder)
-            if os.path.isdir(subfolder_path):
-                inner_folders = [f for f in os.listdir(subfolder_path) if os.path.isdir(os.path.join(subfolder_path, f))]
-                if inner_folders:
-                    result.append({
-                        "folder": subfolder,
-                        "subfolder": inner_folders[0]
-                    })
-
-    return result
-
-
-
-
-
-
-
-@app.route("/parse-jsons", methods=["GET"])
-def parse_jsons_endpoint():
-    path = request.args.get("path")
-    use_training = request.args.get("use_training", "false").lower() == "true"
-    
-    if not path:
-        return jsonify({"error": "Parâmetro 'path' é obrigatório"}), 400
-
-    full_path = os.path.join(BASE_PATH, path)
-    try:
-        result = find_and_parse_folders(full_path, use_training)
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-def find_and_parse_folders(start_path, use_training):
-    result = []
-    selected_dir = "Training" if use_training else "Inference"
-
-    for root, dirs, files in os.walk(start_path):
-        if selected_dir in dirs:
-            target_path = os.path.join(root, selected_dir)
-
-            for filename in os.listdir(target_path):
-                if filename.endswith(".json"):
-                    json_path = os.path.join(target_path, filename)
-                    with open(json_path, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-
-                    fileName = data.get("fileName")
-                    image_path2 = os.path.join(target_path, fileName)
-
-                    main_image_base64 = compress_and_resize_image(image_path2)
-
-                    obj = {
-                        "analystName": data.get("analystName"),
-                        "assaysCollection": data["key"].get("assaysCollection"),
-                        "analyte": data["key"].get("analyte"),
-                        "analyticalParameter": data["key"].get("analyticalParameter"),
-                        "captureTechnique": data["key"].get("captureTechnique"),
-                        "sample": data["key"].get("sample"),
-                        "extraFileNames": [],
-                        "fileName": main_image_base64
-                    }
-
-                    for image_name in data.get("extraFileNames", []):
-                        image_path = os.path.join(target_path, image_name)
-                        if os.path.exists(image_path):
-                            encoded_string = compress_and_resize_image(image_path)
-                            obj["extraFileNames"].append({
-                                "namePath": image_name,
-                                "base64": encoded_string
-                            })
-
-                    result.append(obj)
-
-    return result
-
-
-
-
 
 
 
@@ -292,9 +189,36 @@ def get_uri():
         return "Nenhum Storage URI definido", 404
     return storage_data["uri"]
 
-@app.route("/teste", methods=["GET"])
-def teste():
-    return "Hello world"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def set_context(ctx):
+#     global android_context
+#     android_context = ctx
+
+# def read_content_uri(content_uri):
+#     if android_context is None:
+#         raise ValueError("O contexto do Android não foi definido!")
+
+#     uri = Uri.parse(content_uri)
+#     resolver = android_context.getContentResolver()
+#     input_stream = resolver.openInputStream(uri)
+#     return input_stream.read()
+
 
 
 
@@ -324,19 +248,28 @@ def start() -> None:
 
     if not is_running():
         # Iniciar o servidor Angular
-        # server = TCPServer(("0.0.0.0", get_port()), Handler)
-        # Thread(target=lambda: server.serve_forever(), daemon=True).start()
+        server = TCPServer(("0.0.0.0", get_port()), Handler)
+        Thread(target=lambda: server.serve_forever(), daemon=True).start()
 
         # Iniciar o backend Flask em uma thread separada
         flask_thread = Thread(target=run_flask, daemon=True)
         flask_thread.start()
+
+# def start() -> None:
+#     global server
+#     def run_server() -> None:
+#         global server
+#         try:
+#             server.serve_forever()
+#         finally:
+#             server.server_close()
+#             server = None
+#     if not is_running():
+#         server = TCPServer(("0.0.0.0", get_port()), Handler)
+#         Thread(target=run_server).start()
 
 
 def stop() -> None:
     global server
     if is_running():
         server.shutdown()
-
-
-if __name__ == "__main__":
-    run_flask()

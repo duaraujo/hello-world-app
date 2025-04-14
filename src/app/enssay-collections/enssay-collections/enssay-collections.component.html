@@ -4,9 +4,7 @@
       <mat-card-content>
         <div class="mat-typography">
           <!-- <div class="mat-display-1">Coleções de Ensaios</div> -->
-          <div class="mat-display-1">{{'analitName' | translate}}</div>
-          <button (click)="changeLanguage('pt')">PT</button>
-          <button (click)="changeLanguage('en')">EN</button>
+          <h1 class="mat-display-1">{{'assaysCollections.title' | translate}}</h1>
 
           <div fxLayout="row">
             <mat-form-field fxFlex appearance="outline" class="custom-form-field">
@@ -32,7 +30,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef class="actions-header">  </th>
+                  <th mat-header-cell *matHeaderCellDef class="actions-header"> </th>
                   <td mat-cell *matCellDef="let element" class="actions-column">
                     <button mat-button (click)="download(element.nameFolder)">
                       <mat-icon>download</mat-icon>
@@ -42,7 +40,6 @@
                     </button>
                     <button mat-button (click)="open(element.nameFolder)">
                       <mat-icon>visibility</mat-icon>
-                      <!-- <mat-icon>list</mat-icon> -->
                     </button>
                   </td>
                 </ng-container>
@@ -70,17 +67,20 @@
 
                 <ng-container matColumnDef="nameFolder">
                   <th mat-header-cell *matHeaderCellDef> Nome do analito </th>
-                  <td mat-cell *matCellDef="let element">{{ element }}</td>
+                  <td mat-cell *matCellDef="let element">{{ 'analytes.' + element.subfolder | translate }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef class="actions-header"> Ação </th>
                   <td mat-cell *matCellDef="let element" class="actions-column">
+
                     <button mat-button color="primary"
-                      (click)="getInferenceTraining(element.nameFolder, true)">Inferencia</button>
+                      (click)="getInferenceTraining(element.folder, false)">Inferencia</button>
+
                     <button mat-stroked-button color="accent"
-                      (click)="getInferenceTraining(element.nameFolder, false)">Treinamento</button>
-                    <button mat-button (click)="download2(element.nameFolder)">
+                      (click)="getInferenceTraining(element.folder, true)">Treinamento</button>
+
+                    <button mat-button (click)="download2(element.folder)">
                       <mat-icon>download</mat-icon>
                     </button>
                   </td>
@@ -93,22 +93,43 @@
             </div>
           </div>
 
-
-
-
-
-
           <br><br><br>
 
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let item of dataList">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ item.analystName }} - {{ item.analyte }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ item.analyticalParameter }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div class="info-section">
+                <p><strong>Analyst:</strong> {{ item.analystName }}</p>
+                <p><strong>Analyte:</strong> {{ item.analyte }}</p>
+                <p><strong>Parameter:</strong> {{ item.analyticalParameter }}</p>
+                <p><strong>Technique:</strong> {{ item.captureTechnique }}</p>
+                <p><strong>Collection:</strong> {{ item.assaysCollection }}</p>
+              </div>
+
+              <div class="image-gallery">
+                <ng-container *ngFor="let image of item.extraFileNames">
+                  <mat-card class="image-card">
+                    <img [src]="'data:image/jpeg;base64,' + image.base64" alt="{{ image.namePath }}" />
+                    <mat-card-content>
+                      <small>{{ image.namePath }}</small>
+                    </mat-card-content>
+                  </mat-card>
+                </ng-container>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
 
 
+          <!-- <mat-table [dataSource]="dataSourceImages" class="mat-elevation-z8 small-table">
 
-
-
-
-          <mat-table [dataSource]="dataSourceImages" class="mat-elevation-z8 small-table">
-
-            <!-- Coluna de imagem principal -->
             <ng-container matColumnDef="image">
               <mat-header-cell *matHeaderCellDef> Imagem </mat-header-cell>
               <mat-cell *matCellDef="let element" class="main-image">
@@ -122,38 +143,25 @@
               <mat-cell *matCellDef="let element">
                 <div class="extra-images-container">
                   <div *ngFor="let extraImage of element.extraImages" class="extra-image">
-                    <img [src]="'data:image/jpeg;base64,' + extraImage" 
-                         style="max-width: 50%; height: auto;" 
-                         alt="Extra Image" />
-                  </div>
-                </div>
-              </mat-cell>
-            </ng-container>
-            <!-- <ng-container matColumnDef="extraImages">
-              <mat-header-cell *matHeaderCellDef> Imagens Extras </mat-header-cell>
-              <mat-cell *matCellDef="let element" (click)="onRowClicked(element)">
-                <div class="extra-images-container">
-                  <div *ngFor="let extraImage of element.extraImages" class="extra-image">
                     <img [src]="'data:image/jpeg;base64,' + extraImage" style="max-width: 50%; height: auto;"
                       alt="Extra Image" />
                   </div>
                 </div>
               </mat-cell>
-            </ng-container> -->
+            </ng-container>
 
             <ng-container matColumnDef="infos">
               <th mat-header-cell *matHeaderCellDef> Informações </th>
               <mat-cell *matCellDef="let element">
                 <div class="info-container">
                   <div><strong>Analyst Name:</strong> {{ analystName }}</div>
-                  <!-- <div><strong>Date:</strong> {{ datatime | date: 'short' }}</div> -->
                 </div>
               </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumnsImages"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumnsImages;" class="mat-row"></mat-row>
-          </mat-table>
+          </mat-table> -->
 
         </div>
       </mat-card-content>

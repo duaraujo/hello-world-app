@@ -1,3 +1,607 @@
 {
-    "analitName": "Test translate"
+  "menu": {
+    "title": "Chemical Analysis",
+    "homeScreen": "HOME",
+    "assaysCollections": "ASSAYS COLLECTIONS",
+    "exit": "EXIT"
+  },
+  "assaysCollections": {
+    "title": "Assays Collections"
+  },
+  "analytes": {
+    "Alkalinity": "Alkalinity",
+    "BisulfiteConcentration": "Bisulfite Concentration",
+    "OilPhaseConcentration": "Oil Phase Concentration"
+  },
+  "Alkalinity": {
+    "name": "Alkalinity",
+    "analyticalParameters": {
+      "Alkalinity": {
+        "name": "Alkalinity",
+        "predefinedStock": true,
+        "valueUnit": "mg HCO<sub><small>3</small></sub><sup><small>-</small></sup>/L",
+        "otherValueUnits": [
+          {
+            "valueUnit": "mmoles H<sup><small>+</small></sup>/L",
+            "fromOfficialToOtherUnit": {
+              "script": "${Value} / 61.0168"
+            }
+          }
+        ],
+        "captureTechniques": {
+          "Pot4mL.Colorimetry": {
+            "name": "Colorimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 500,
+              "upper": 2500
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "ColorReagent": {
+                "name": "Color Reagent",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Bisulfite": {
+    "name": "Bisulfite",
+    "analyticalParameters": {
+      "BisulfiteConcentration": {
+        "name": "Bisulfite Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg HSO<sub><small>3</small></sub><sup><small>-</small></sup>/L",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot4mL.Colorimetry": {
+            "name": "Colorimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 1,
+              "upper": 20
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "ReagentForBisulfite": {
+                "name": "Reagent for Bisulfite",
+                "count": 4
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Chloride": {
+    "name": "Chloride",
+    "analyticalParameters": {
+      "ChlorideConcentration": {
+        "name": "Chloride Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg NaCl/L",
+        "otherValueUnits": [
+          {
+            "valueUnit": "mg Cl<sup><small>-</small></sup>/L",
+            "fromOfficialToOtherUnit": {
+              "script": "${Value} / 1.649"
+            }
+          }
+        ],
+        "captureTechniques": {
+          "Pot4mL.Precipitation": {
+            "name": "Precipitation in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 10000,
+              "upper": 300000
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_BLACK_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "ReagentForChloride": {
+                "name": "Reagent for Chloride",
+                "count": 1
+              },
+              "Liquidator": {
+                "name": "Liquidator",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Emulsion": {
+    "name": "Emulsion",
+    "analyticalParameters": {
+      "OilPhaseConcentration": {
+        "name": "Oil Phase Concentration",
+        "predefinedStock": false,
+        "valueUnit": "ppm",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot10mL.Turbidimetry": {
+            "name": "Turbidimetry in a 10 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 1000
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_10ML_EXPERIMENTAL_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {},
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          },
+          "InSituTube.Turbidimetry": {
+            "name": "In Situ Turbidimetry with Tube",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 1000
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 5,
+            "chamberType": "IN_SITU_TUBE_BLACK_BACKGROUND",
+            "imageSource": "VIDEO_FROM_BACK_CAMERA",
+            "inputTypes": {},
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Iron2": {
+    "name": "Iron(II)",
+    "analyticalParameters": {
+      "Iron2Concentration": {
+        "name": "Iron(II) Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg Fe<sup><small>2+</small></sup>/L",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot4mL.Colorimetry": {
+            "name": "Colorimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 20
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "Complexant": {
+                "name": "Complexant",
+                "count": 1
+              },
+              "Buffer": {
+                "name": "Buffer",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Iron3": {
+    "name": "Iron(III)",
+    "analyticalParameters": {
+      "Iron3Concentration": {
+        "name": "Iron(III) Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg Fe<sup><small>3+</small></sup>/L",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot4mL.Colorimetry": {
+            "name": "Colorimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 20
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "Complexant": {
+                "name": "Complexant",
+                "count": 1
+              },
+              "Acid": {
+                "name": "Acid",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "pH": {
+    "name": "pH",
+    "analyticalParameters": {
+      "pH": {
+        "name": "pH",
+        "predefinedStock": false,
+        "valueUnit": null,
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot10mL.Colorimetry": {
+            "name": "Colorimetry in a 10 mL Pot",
+            "valueBounds": {
+              "lower": 5,
+              "upper": 9
+            },
+            "referenceValue": 7,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "mL"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "mL"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_10ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "pHIndicatorMix": {
+                "name": "pH Indicator Mix",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          },
+          "InSituWindow.Colorimetry": {
+            "name": "In Situ Colorimetry with Window",
+            "valueBounds": {
+              "lower": 5,
+              "upper": 9
+            },
+            "referenceValue": null,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "IN_SITU_WINDOW",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "pHIndicatorMix": {
+                "name": "pH Indicator Mix",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Phosphate": {
+    "name": "Phosphate",
+    "analyticalParameters": {
+      "PhosphateConcentration": {
+        "name": "Phosphate Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg PO<sub><small>4</small></sub><sup><small>-3</small></sup>/L",
+        "otherValueUnits": [
+          {
+            "valueUnit": "mg P/L",
+            "fromOfficialToOtherUnit": {
+              "script": "${Value} / 3.0661"
+            }
+          }
+        ],
+        "captureTechniques": {
+          "Pot4mL.Colorimetry": {
+            "name": "Colorimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 50
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "Input": {
+                "name": "Input",
+                "count": 2
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Redox": {
+    "name": "Redox",
+    "analyticalParameters": {
+      "RedoxPotential": {
+        "name": "Redox Potential",
+        "predefinedStock": false,
+        "valueUnit": "mV",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot10mL.Colorimetry": {
+            "name": "Colorimetry in a 10 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 900
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_10ML_WHITE_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "RedoxIndicatorMix": {
+                "name": "Redox Indicator Mix",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Sulfate": {
+    "name": "Sulfate",
+    "analyticalParameters": {
+      "SulfateConcentration": {
+        "name": "Sulfate Concentration",
+        "predefinedStock": true,
+        "valueUnit": "mg SO<sub><small>4</small></sub><sup><small>-2</small></sup>/L",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot4mL.Turbidimetry": {
+            "name": "Turbidimetry in a 4 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 4000
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "StandardVolume": {
+                "name": "Standard Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              },
+              "UsedVolume": {
+                "name": "Used Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "&#x3BC;L"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_4ML_BLACK_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {
+              "ReagentForSulfate": {
+                "name": "Reagent for Sulfate",
+                "count": 1
+              }
+            },
+            "pyValueToolSet": {
+              "name": "WithStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Suspension": {
+    "name": "Suspension",
+    "analyticalParameters": {
+      "SolidsConcentration": {
+        "name": "Solids Concentration",
+        "predefinedStock": false,
+        "valueUnit": "ppm",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "Pot10mL.Turbidimetry": {
+            "name": "Turbidimetry in a 10 mL Pot",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 40
+            },
+            "referenceValue": 0,
+            "extraValues": {},
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "POT_10ML_EXPERIMENTAL_BACKGROUND",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {},
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      },
+      "SolidsMass": {
+        "name": "Solids Mass",
+        "predefinedStock": false,
+        "valueUnit": "mg",
+        "otherValueUnits": [],
+        "captureTechniques": {
+          "WhiteMembrane.FiltrateAnalysis": {
+            "name": "Filtrate Analysis in a White Membrane",
+            "valueBounds": {
+              "lower": 0,
+              "upper": 10
+            },
+            "referenceValue": 0,
+            "extraValues": {
+              "Concentration": {
+                "name": "Concentration",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "ppm"
+              },
+              "FilteredVolume": {
+                "name": "Filtered Volume",
+                "valueBounds": {
+                  "lower": 0,
+                  "upper": null
+                },
+                "valueUnit": "mL"
+              }
+            },
+            "extraCaptures": 4,
+            "videoLengthInSeconds": 0,
+            "chamberType": "MEMBRANE_WHITE_BACK_LIGHTING",
+            "imageSource": "PICTURE_FROM_BACK_CAMERA",
+            "inputTypes": {},
+            "pyValueToolSet": {
+              "name": "WithoutStockWithoutReductionValueToolSet"
+            }
+          }
+        }
+      }
+    }
+  }
 }
