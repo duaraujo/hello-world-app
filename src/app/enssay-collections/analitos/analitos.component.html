@@ -1,0 +1,48 @@
+<div class="container">
+
+    <h1 class="titulo">{{name}}</h1>
+
+    <!-- <div class="contador">
+        {{ dataSourceAnalitos.length }} analitos encontrados
+    </div> -->
+
+    <div class="cards-wrapper" fxLayout="row wrap" fxLayoutGap="16px">
+        <div *ngFor="let element of dataSourceAnalitos" fxFlex="100%" fxFlex.gt-xs="48%" fxFlex.gt-sm="31%">
+            <mat-card class="card-colecao">
+                <mat-card-content>
+                    <h2 class="nome">{{ 'analytes.' + element.subfolder | translate }}</h2>
+                </mat-card-content>
+
+                <mat-card-actions align="end" class="piano-buttons">
+                    <button mat-stroked-button color="primary" matTooltip="Coleção de Inferência"
+                        (click)="getInferenceTraining(element.folder, false)">
+                        <!-- <mat-icon>visibility</mat-icon>
+                        <mat-icon>query_stats</mat-icon>
+                        <mat-icon>search</mat-icon>
+                        <mat-icon>analytics</mat-icon> -->
+                        <mat-icon>insights</mat-icon>
+                        <!-- Inferência -->
+                    </button>
+
+                    <!-- <mat-icon>build</mat-icon>
+                    <mat-icon>science</mat-icon>
+                    <mat-icon>auto_mode</mat-icon>
+                    <mat-icon>trending_up</mat-icon> -->
+                    <button mat-stroked-button color="accent" matTooltip="Coleção de Calibração"
+                        (click)="getInferenceTraining(element.folder, true)">
+                        <mat-icon>model_training</mat-icon>
+                    </button>
+
+                    <button mat-stroked-button matTooltip="Baixar dados" 
+                    (click)="download2(element.folder)">
+                        <mat-icon>download</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+    <button mat-fab class="fab-button voltar-button" matTooltip="Voltar" (click)="voltar()">
+        <mat-icon class="voltar-icon">arrow_back</mat-icon>
+    </button>
+
+</div>

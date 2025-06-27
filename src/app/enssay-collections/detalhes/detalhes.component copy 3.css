@@ -1,0 +1,254 @@
+.container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.titulo {
+  font-size: 24px;
+  color: #087e40;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.cards-grid {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.detalhe-card {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .imagens-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+} */
+
+.imagens-container {
+  display: flex;
+  gap: 24px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* .imagem-principal img {
+  width: 220px;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+} */
+
+.imagem-principal img {
+  width: 220px;
+  height: 200px;        
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* .imagens-extras-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+} */
+
+.imagens-extras-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+/* .imagem-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.imagem-extra img {
+  width: 100px;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imagem-extra small {
+  font-size: 11px;
+  text-align: center;
+  color: #666;
+} */
+
+.imagem-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.imagem-extra img {
+  width: 220px;
+  height: 200px;      
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.imagem-extra small {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #666;
+  max-width: 210px;
+  word-break: break-word;
+  font-style: italic;
+}
+
+
+.legenda {
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+  display: block;
+}
+
+.info-section {
+  margin-top: 16px;
+  width: 100%;
+  text-align: left;
+}
+
+.info-section h3 {
+  margin-top: 0;
+  color: #087e40;
+  font-size: 1.2rem;
+}
+
+.info-section p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.fab-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.voltar-button {
+  background-color: #087e40 !important;
+  color: #ffc107 !important;
+}
+
+.voltar-icon {
+  color: #ffc107;
+}
+
+.legenda,
+.imagem-extra small {
+  font-style: italic;
+  color: #777;
+}
+
+/* Card com leve efeito hover (opcional): */
+
+.detalhe-card:hover {
+  transform: scale(1.01);
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Melhorar legibilidade das informações: */
+.info-section p {
+  margin: 6px 0;
+  line-height: 1.5;
+  font-size: 0.98rem;
+}
+
+/* Cursor de clique + efeito hover nas imagens principais e extras */
+.imagem-principal,
+.imagem-extra {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.imagem-principal:hover,
+.imagem-extra:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Adicionar um efeito mais sutil para o hover da legenda: */
+.legenda:hover,
+.imagem-extra small:hover {
+  color: #333;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .imagens-extras-coluna {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .imagem-extra {
+    margin: 4px;
+  }
+
+  .imagem-extra img {
+    width: 80px;
+  }
+
+  .imagem-extra small {
+    max-width: 80px;
+  }
+}
+
+/* Ajustar colunas para tela maior */
+
+@media (min-width: 1600px) {
+  .cards-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .imagens-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .imagem-principal img,
+  .imagem-extra img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+  .imagens-extras-coluna {
+    flex-direction: row;
+    gap: 8px;
+  }
+}

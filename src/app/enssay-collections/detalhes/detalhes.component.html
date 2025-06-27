@@ -1,0 +1,56 @@
+<div class="container">
+  <h1 class="titulo">Capturas Realizadas</h1>
+
+  <div class="cards-grid">
+    <mat-card class="detalhe-card" *ngFor="let item of dataList">
+      <div class="imagens-row">
+        <div class="imagem-info-top">
+          {{ item.datetime | date:'dd/MM/yyyy, HH:mm' }} ({{ item.analystName }})
+        </div>
+        <div class="imagem-principal" (click)="openImage(item.fileName, 'Imagem principal')">
+          <img [src]="'data:image/jpeg;base64,' + item.fileName" alt="Imagem principal" />
+          <span class="legenda">Imagem principal</span>
+        </div>
+
+        
+        <div class="imagens-extras-coluna">
+          <!-- Seta para cima -->
+          <button class="extras-nav-arrow up"
+            *ngIf="item.extraFileNames.length > EXTRAS_PER_PAGE && hasPrevExtras(item)" (click)="goToPrevExtras(item)">
+            &#8593;
+          </button>
+          <div class="extra-imgs-list">
+            <div class="imagem-extra" *ngFor="let image of getExtraImagesToShow(item)"
+              (click)="openImage(image.base64, image.namePath)">
+              <img [src]="'data:image/jpeg;base64,' + image.base64" [alt]="image.namePath" />
+            </div>
+          </div>
+          <!-- Seta para baixo -->
+          <button class="extras-nav-arrow down"
+            *ngIf="item.extraFileNames.length > EXTRAS_PER_PAGE && hasNextExtras(item)" (click)="goToNextExtras(item)">
+            &#8595;
+          </button>
+        </div>
+
+
+
+      </div>
+
+      <div class="info-section">
+        <p><strong>Nome: </strong>
+          <ng-container *ngIf="item.referenceFileName == null; else showStock">
+            Referência
+          </ng-container>
+          <ng-template #showStock>{{ item.stockName }} ({{item.aliquotName}})</ng-template>
+        </p>
+        <p><strong>Volume Padrão:</strong> {{ item.standardVolume }},0 &micro;L</p>
+        <p><strong>Volume Utilizado:</strong> {{ item.usedVolume }},0 &micro;L</p>
+        <p><strong>{{ 'analytes.' + item.analyticalParameter | translate }}</strong> </p>
+      </div>
+    </mat-card>
+  </div>
+
+  <button mat-fab class="fab-button voltar-button" matTooltip="Voltar" (click)="voltar()">
+    <mat-icon class="voltar-icon">arrow_back</mat-icon>
+  </button>
+</div>

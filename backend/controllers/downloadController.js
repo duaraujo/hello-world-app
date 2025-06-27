@@ -11,7 +11,6 @@ exports.downloadDirectory = (req, res) => {
   }
 
   const zipFileName = `${path.basename(directoryPath)}.zip`;
-  const zipFilePath = path.join(__dirname, zipFileName);
   res.setHeader('Content-Disposition', `attachment; filename="${zipFileName}"`);
   res.setHeader('Content-Type', 'application/zip');
 

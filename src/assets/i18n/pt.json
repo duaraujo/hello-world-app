@@ -11,7 +11,8 @@
   "analytes": {
     "Alkalinity": "Alcalinidade",
     "BisulfiteConcentration": "Concentração de bissulfito",
-    "OilPhaseConcentration":  "Concentração de Fase Oleosa"
+    "OilPhaseConcentration":  "Concentração de Fase Oleosa",
+    "ChlorideConcentration":  "Concentração de Cloreto"
   },
   "Alkalinity": {
     "name": "Alcalinidade",

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Editar Coleção</h2>
+
+<form [formGroup]="form" class="dialog-form">
+  <mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        O nome é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Descrição</mat-label>
+      <textarea matInput rows="3" formControlName="description"></textarea>
+      <mat-error *ngIf="form.get('description')?.hasError('required')">
+        A descrição é obrigatória
+      </mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+      Salvar
+    </button>
+  </mat-dialog-actions>
+</form>

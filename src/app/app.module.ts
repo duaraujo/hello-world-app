@@ -7,12 +7,12 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { AppRoutingModule } from './app-routing.module';
-import { LoggerModule } from 'ngx-logger';
-import { environment } from '../environments/environment';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -25,6 +25,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     BrowserModule,
     HttpClientModule,
+    MatDialogModule,
     TranslateModule.forRoot({
       defaultLanguage: 'pt',
       loader: {
@@ -40,9 +41,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     CustomMaterialModule.forRoot(),
     AppRoutingModule,
     LoggerModule.forRoot({
-      serverLoggingUrl: `http://my-api/logs`,
-      level: environment.logLevel,
-      serverLogLevel: environment.serverLogLevel
+      serverLoggingUrl: 'http://localhost:3000/logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR
     })
   ],
   bootstrap: [AppComponent]

@@ -42,21 +42,11 @@
 
 /*Set sidenav width*/
 
-mat-sidenav {
-  min-width: 180px !important;
-  border-right: 1px solid #eee;
-  box-shadow: 6px 0 6px rgba(0, 0, 0, .1);
-  /* background-color:rgb(63, 81, 181); */
-}
 
 /* Set height of wrapper to stop content from moving up & down */
 
 .progress-bar-container {
   height: 5px;
-}
-
-a.mat-list-item.active {
-  background: rgba(0, 0, 0, .04);
 }
 
 #push-bottom {
@@ -83,4 +73,213 @@ a[mat-list-item] {
 
 a[mat-list-item] span[matLine] {
   margin-left: 8px;
+}
+
+
+/* Cor de fundo do sidenav */
+mat-sidenav {
+  min-width: 180px !important;
+  background-color: #ffffff !important; /* branco */
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 6px 0 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Ícones e textos no menu */
+a.mat-list-item {
+  color: #087e40 !important;  /* verde escuro */
+  font-weight: 500;
+}
+
+a.mat-list-item:hover {
+  background-color: #e8f5e9; /* verde claro no hover */
+}
+
+/* a.mat-list-item.active {
+  background-color: #fff9c4 !important; 
+  font-weight: bold;
+  color: #087e40 !important;
+} */
+
+/* a.mat-list-item.active mat-icon {
+  color: #087e40 !important;
+} */
+
+/* .mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important;
+  font-weight: bold;
+  color: #087e40 !important;
+} */
+
+/* .mat-nav-list a.mat-list-item.active mat-icon {
+  color: #087e40 !important;
+} */
+
+
+
+a[mat-list-item] mat-icon {
+  color: #087e40 !important; /* ícone verde */
+}
+
+mat-nav-list h3[mat-subheader] {
+  color: #087e40;
+  font-weight: 600;
+  padding-left: 16px;
+  margin-top: 16px;
+}
+
+
+
+.mat-list-item span[matLine] {
+  color: #087e40 !important;
+  font-weight: 500;
+}
+
+a[mat-list-item] span[matLine] {
+  color: #087e40 !important;
+  font-weight: 500;
+}
+
+
+a[mat-list-item] {
+  display: flex;
+  align-items: center; /* Alinha verticalmente ícone + texto */
+}
+
+a[mat-list-item] mat-icon {
+  font-size: 20px; /* ou 24px, conforme seu visual */
+  margin-right: 8px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+
+/* ::ng-deep .mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important;
+} */
+
+
+/* .mat-list-item.active::after {
+  background-color: transparent !important;
+  box-shadow: none !important;
+} */
+
+/* .mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important;
+  z-index: 1;
+  position: relative;
+} */
+
+
+/* .mat-nav-list a.mat-list-item.active {
+  position: relative;
+  z-index: 1;
+} */
+
+
+/* Remove o overlay escuro que o Angular Material aplica */
+/* .mat-list-item.mat-list-item-active::after,
+.mat-list-item.active::after {
+  background-color: transparent !important;
+  box-shadow: none !important;
+} */
+
+/* Garante que o fundo do item ativo vai aparecer */
+.mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important; /* amarelo suave */
+  color: #087e40 !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Aplica a mesma cor ao ícone e texto */
+.mat-nav-list a.mat-list-item.active mat-icon,
+.mat-nav-list a.mat-list-item.active span[matLine] {
+  color: #087e40 !important;
+}
+
+
+/* Força o fundo amarelo no item ativo */
+.mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important;
+  color: #087e40 !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove qualquer overlay que o Angular adiciona */
+.mat-nav-list a.mat-list-item.active::before {
+  background: transparent !important;
+  opacity: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Corrige cor do ícone e texto */
+.mat-nav-list a.mat-list-item.active mat-icon,
+.mat-nav-list a.mat-list-item.active span[matLine] {
+  color: #087e40 !important;
+}
+
+
+/* Estilo garantido para o item ativo no menu lateral */
+
+/* Anula overlays e efeitos visuais do Angular Material */
+::ng-deep .mat-list-item::before,
+::ng-deep .mat-list-item.active::before {
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+}
+
+/* Aplica estilo ao item de menu ativo */
+::ng-deep mat-nav-list a.mat-list-item.active {
+  background-color: #fff9c4 !important; /* amarelo suave */
+  color: #087e40 !important;
+  font-weight: bold;
+  position: relative;
+  border-radius: 8px;
+  margin: 4px 8px;
+  padding: 8px 12px;
+}
+
+/* Corrige cor de texto e ícone */
+::ng-deep mat-nav-list a.mat-list-item.active mat-icon,
+::ng-deep mat-nav-list a.mat-list-item.active span[matLine] {
+  color: #087e40 !important;
+}
+
+/* Hover ainda funciona para itens não ativos */
+::ng-deep a.mat-list-item:hover:not(.active) {
+  background-color: #e8f5e9 !important;
+}
+
+
+::ng-deep a.mat-mdc-list-item.active {
+  background-color: #fff9c4 !important; /* amarelo suave */
+  color: #087e40 !important;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 4px 8px;
+}
+
+::ng-deep a.mat-mdc-list-item.active mat-icon,
+::ng-deep a.mat-mdc-list-item.active span[matLine] {
+  color: #087e40 !important;
+}
+
+::ng-deep a.mat-mdc-list-item.active::before {
+  background: transparent !important;
+  opacity: 0 !important;
+  box-shadow: none !important;
+}
+
+
+/* mat-icon.large-icon {
+  font-size: 28px;        
+  font-weight: bold;      
+  text-shadow: 0 0 1px #000;  
+} */
+
+mat-icon.thick-icon {
+  font-size: 24px;
+  font-variation-settings: 'wght' 700; /* aumenta o peso da fonte se suportado */
 }

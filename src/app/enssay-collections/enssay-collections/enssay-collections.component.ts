@@ -1,158 +1,52 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { SelectionModel } from '@angular/cdk/collections';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { ROOT_PATH } from '../../constants/app.constants';
 import { NewGetFoldersService } from '../services/new-get-folders.service';
-import { GetInferenceTrainingService } from '../services/get-inference-training.service';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { FileService } from '../services/file.service';
+import { Router } from '@angular/router';
+import {
+  EditDialogComponent,
+  FolderData,
+} from '../edit-dialog/edit-dialog.component';
+import { UpdateJsonService } from '../services/update-json.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-enssay-collections',
   templateUrl: './enssay-collections.component.html',
   styleUrls: ['./enssay-collections.component.css'],
 })
-export class EnssayCollectionsComponent implements OnInit {
+export class EnssayCollectionsComponent implements OnInit, AfterViewInit {
   folderSelected = '';
-  directoryPath: string = ROOT_PATH + '2/';
-  displayedColumns: string[] = ['folder', 'actions'];
-  selection = new SelectionModel<string>(false, []);
   filterControl = new FormControl();
-  filteredDataSource!: Observable<string[]>;
-  dataSource = new MatTableDataSource<string>([]);
-  fullPath = '';
-  elementSelected = null;
-  inferenceSelected = false;
-
-  analystName = '';
-  datatime = '';
-
-  dataResultGetImages = [];
-  dataSourceImages: any[] = [];
-  selectionImages = new SelectionModel<string>(false, []);
-  displayedColumnsImages: string[] = ['image', 'extraImages', 'infos'];
-
-  dataSourceAnalitos: any[] = [];
-  displayedColumnsAnalitos: string[] = ['nameFolder', 'actions'];
-
   files: any[] = [];
-  directoryPathUpdateFile: string = 'datasets/arquivos';
-
-  dataList: any[] = [];
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  folders: any[] = [];
 
   constructor(
     private getFoldersService: NewGetFoldersService,
-    private getInferenceTrainingService: GetInferenceTrainingService,
     public dialog: MatDialog,
-    private updateDialog: MatDialog,
-    private fileService: FileService,
+    private updateJson: UpdateJsonService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
-  ngOnInit(): void {
-    this.getFoldersService
-      .getFolders(this.directoryPath)
-      .subscribe((data: string[]) => {
-        this.dataSource.data = data;
-        this.dataSource.filter = '';
-        if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-        }
-      });
-  }
+  ngOnInit(): void {}
 
-  getInferenceTraining(element: any, useTraining: boolean) {
-    const path = `${this.folderSelected}/${element}`;
-    this.getFoldersService.parseJsons(path, useTraining)
-    .subscribe((data) => {
-      this.dataList = data;
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.getFolders();
     });
   }
 
-  getInferenceTrainingg(element: any, inference: boolean) {
-    this.elementSelected = element;
-    this.inferenceSelected = inference;
-
-    let fullPath = this.fullPath + '/' + element;
-    this.getInferenceTrainingService
-      .getImages(fullPath, inference)
-      .subscribe((data: any) => {
-        this.dataResultGetImages = data.images;
-        this.analystName = data.analystName;
-        this.datatime = data.datetime;
-
-        // Agrupar imagens principais e extras
-        const groupedData = data.images.reduce((acc: any, item: any) => {
-          // Identificar o nome base antes de '-extra' ou '.jpg'
-          const baseName = item.name.includes('-extra-')
-            ? item.name.split('-extra-')[0]
-            : item.name.split('.jpg')[0];
-
-          // Verificar se já existe o item no agrupamento
-          if (!acc[baseName]) {
-            // Se não existe, criar a estrutura para a imagem principal
-            acc[baseName] = {
-              image: null, // Inicialmente sem imagem principal
-              name: '', // Inicialmente sem nome
-              extraImages: [], // Array para as imagens extras
-            };
-          }
-
-          // Se for a imagem principal (sem '-extra-'), salvar a imagem e o nome
-          if (!item.name.includes('-extra-')) {
-            acc[baseName].image = item.base64;
-            acc[baseName].name = item.name;
-          }
-
-          // Se for uma imagem extra, adicionar ao array de extraImages
-          if (item.name.includes('-extra-')) {
-            acc[baseName].extraImages.push(item.base64);
-          }
-
-          return acc;
-        }, {});
-
-        // Converter o objeto agrupado em array para dataSourceImages
-        this.dataSourceImages = Object.values(groupedData);
-        //console.log(this.dataSourceImages); // Log para ver o array final e verificar se mostra a imagem principal e as extras
-      });
-  }
-
   getFolders(): void {
-    if (this.directoryPath.trim()) {
-      this.getFoldersService
-        .getFolders(this.directoryPath)
-        .subscribe((data: string[]) => {
-          this.dataSource.data = data;
-          this.dataSource.filter = '';
-          if (this.paginator) {
-            this.dataSource.paginator = this.paginator;
-          }
-        });
-    } else {
-      console.warn('Insira um caminho de diretório válido');
-    }
-  }
-  
-  onRowClicked(row: any) {
-    this.selectionImages.toggle(row);
-  }
-
-  clearFolders() {
-    this.directoryPath = '';
-    this.dataSource.data = [];
-    this.dataSource.filter = '';
-    this.selection.clear();
+    this.getFoldersService.getFolders().subscribe((data: any[]) => {
+      this.folders = data;
+    });
   }
 
   download(path: string) {
-    let fp = this.directoryPath + path;
-    this.getFoldersService.download(fp).subscribe(
+    this.getFoldersService.download(path).subscribe(
       (file: Blob) => {
         saveAs(file, 'arquivo.zip');
       },
@@ -162,93 +56,49 @@ export class EnssayCollectionsComponent implements OnInit {
     );
   }
 
-  download2(path: string) {
-    let fp = this.fullPath + '/' + path;
-    this.getFoldersService.download(fp).subscribe(
-      (file: Blob) => {
-        saveAs(file, 'arquivo.zip');
-      },
-      (error) => {
-        console.error('Erro ao baixar o arquivo:', error);
+  open(element: any) {
+    this.folderSelected = element.nameFolder;
+    this.router.navigate([
+      '/enssay/analitos',
+      element.nameFolder,
+      element.name,
+    ]);
+  }
+
+  edit(element: any) {
+    const dataToSend: FolderData = {
+      name: element.name,
+      description: element.description,
+      nameFolder: element.nameFolder,
+    };
+
+    const dialogRef = this.dialog.open(EditDialogComponent, {
+      width: '400px',
+      data: dataToSend,
+    });
+
+    dialogRef.afterClosed().subscribe((result: FolderData | undefined) => {
+      if (result) {
+        this.updateJson
+          .updateFile(dataToSend.nameFolder, result.name, result.description)
+          .subscribe({
+            next: (resp) => {
+              element.name = result.name;
+              element.description = result.description;
+              this.snackBar.open('Coleção atualizada com sucesso', 'Fechar', {
+                duration: 3000,
+                panelClass: ['custom-success'],
+                horizontalPosition: 'right',
+                verticalPosition: 'top',
+              });
+            },
+            error: (err) => {
+              console.error('Falha ao atualizar JSON:', err);
+            },
+          });
+      } else {
+        console.log('Edição cancelada');
       }
-    );
-  }
-
-  open(path: string) {
-    this.folderSelected = path;
-    this.getFoldersService
-      .getCapturesTaken(path)
-      .subscribe((data: any[]) => {
-        this.dataSourceAnalitos = data;
-        console.log('Dados recebidos:', data);
-      });
-
-
-      // this.getFoldersService
-      //   .getImageNewApi('')
-      //   .subscribe((data: any[]) => {
-      //     console.log('Dados recebidos:', data);
-
-      //     // Transformação dos dados
-      //     this.dataSourceImages = data.map((item) => ({
-      //       analystName: item.analystName,
-      //       image: item.sample.base64, // Imagem principal
-      //       extraImages: Array.isArray(item.extraFileNames)
-      //         ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
-      //         : [item.extraFileNames.base64], // Caso seja um único objeto
-      //     }));
-
-      //     console.log('Dados processados:', this.dataSourceImages);
-      //   });
-
-  }
-
-  open3(path: string) {
-    console.log(path);
-    if (this.directoryPath.trim()) {
-      this.fullPath = `${this.directoryPath}${path}`;
-      this.getFoldersService
-        .getImageNewApi(this.fullPath)
-        .subscribe((data: any[]) => {
-          console.log('Dados recebidos:', data);
-
-          // Transformação dos dados
-          this.dataSourceImages = data.map((item) => ({
-            analystName: item.analystName,
-            image: item.sample.base64, // Imagem principal
-            extraImages: Array.isArray(item.extraFileNames)
-              ? item.extraFileNames.map((file: { base64: any }) => file.base64) // Lista de base64s
-              : [item.extraFileNames.base64], // Caso seja um único objeto
-          }));
-
-          console.log('Dados processados:', this.dataSourceImages);
-        });
-    } else {
-      console.warn('Insira um caminho de diretório válido');
-    }
-  }
-
-  open2(path: string) {
-    if (this.directoryPath.trim()) {
-      this.fullPath = `${this.directoryPath}${path}`;
-      this.getFoldersService
-        .getFolders(this.fullPath)
-        .subscribe((data: any[]) => {
-          this.dataSourceAnalitos = data;
-        });
-    } else {
-      console.warn('Insira um caminho de diretório válido');
-    }
-  }
-
-  update(path: string) {
-    let fp = this.directoryPath + path;
-
-    this.fileService.getFiles(fp).subscribe((files) => {
-      this.files = files;
-      let data = this.files[0];
-      const fileData = JSON.parse(atob(data.contentBase64));
-
     });
   }
 }

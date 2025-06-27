@@ -69,6 +69,10 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.changeDetectorRef.detectChanges();
+    //this.changeDetectorRef.detectChanges();
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      this.changeDetectorRef.detectChanges();
+    });
   }
 }

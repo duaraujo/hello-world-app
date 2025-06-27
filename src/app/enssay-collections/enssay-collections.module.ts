@@ -7,6 +7,10 @@ import { EnssayCollectionsComponent } from './enssay-collections/enssay-collecti
 import { GetInferenceTrainingService } from './services/get-inference-training.service';
 import { ConfirmMainDialogComponent } from './confirm-main-dialog/confirm-main-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AnalitosComponent } from './analitos/analitos.component';
+import { DetalhesComponent } from './detalhes/detalhes.component';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
+import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
 
 
 
@@ -14,6 +18,10 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [
     EnssayCollectionsComponent,
     ConfirmMainDialogComponent,
+    AnalitosComponent,
+    DetalhesComponent,
+    ImageViewerComponent,
+    EditDialogComponent,
   ],
   imports: [
     CommonModule,

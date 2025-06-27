@@ -3,7 +3,6 @@ const path = require('path');
 
 
 exports.findAllByAnalito = (req, res) => {
-  console.log('----------------------------')
   const pathDefault = '/home/eduardo_araujo/Documentos/project';
   const directoryPath = `${pathDefault}/${req.query.directoryPath}`;
 

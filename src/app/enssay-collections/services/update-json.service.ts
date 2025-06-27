@@ -10,11 +10,11 @@ export class UpdateJsonService {
 
   constructor(private http: HttpClient) {}
 
-  updateFile(fileName: string, fileContent: any, urlPath: string): Observable<any> {
-    return this.http.post(`${BASE_URL}/update-file`, {
-      fileName,
-      fileContent,
-      urlPath
-    });
+  updateFile(nameFolder: string, name: string, description: string): Observable<any> {
+    // O endpoint espera PUT /enssay-collections/:folder_name
+    const url = `${BASE_URL}/enssay-collections/${encodeURIComponent(nameFolder)}`;
+    const body = { name, description };
+    return this.http.put(url, body);
   }
+  
 }

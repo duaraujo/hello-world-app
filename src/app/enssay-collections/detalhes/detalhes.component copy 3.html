@@ -1,0 +1,51 @@
+<div class="container">
+  <h1 class="titulo">Capturas Realizadas</h1>
+
+  <div class="cards-grid">
+    <mat-card class="detalhe-card" *ngFor="let item of dataList">
+
+      <!-- <div class="imagens-container">
+        <div class="imagem-principal" (click)="openImage(item.fileName, 'Imagem principal')">
+          <img [src]="'data:image/jpeg;base64,' + item.fileName" alt="Imagem principal" />
+          <span class="legenda">Imagem principal</span>
+        </div>
+
+        <div class="imagem-extra" *ngFor="let image of item.extraFileNames"
+          (click)="openImage(image.base64, image.namePath)">
+          <img [src]="'data:image/jpeg;base64,' + image.base64" alt="{{ image.namePath }}" />
+          <small>{{ image.namePath }}</small>
+        </div>
+
+      </div> -->
+
+      <div class="imagens-container">
+        <div class="imagem-principal" (click)="openImage(item.fileName, 'Imagem principal')">
+          <img [src]="'data:image/jpeg;base64,' + item.fileName" alt="Imagem principal" />
+          <span class="legenda">Imagem principal</span>
+        </div>
+
+        <div class="imagens-extras-coluna">
+          <div class="imagem-extra" *ngFor="let image of item.extraFileNames"
+            (click)="openImage(image.base64, image.namePath)">
+            <img [src]="'data:image/jpeg;base64,' + image.base64" alt="{{ image.namePath }}" />
+            <small>{{ image.namePath }}</small>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="info-section">
+        <h3>{{ item.analystName }} - {{ item.analyte }}</h3>
+        <p><strong>Analista:</strong> {{ item.analystName }}</p>
+        <p><strong>Analito:</strong> {{ item.analyte }}</p>
+        <p><strong>Parâmetro:</strong> {{ item.analyticalParameter }}</p>
+        <p><strong>Técnica:</strong> {{ item.captureTechnique }}</p>
+        <p><strong>Coleção:</strong> {{ item.assaysCollection }}</p>
+      </div>
+    </mat-card>
+  </div>
+
+  <button mat-fab class="fab-button voltar-button" matTooltip="Voltar" (click)="voltar()">
+    <mat-icon class="voltar-icon">arrow_back</mat-icon>
+  </button>
+</div>
