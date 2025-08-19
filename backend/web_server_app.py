@@ -6,7 +6,6 @@ from flask import Flask, request, jsonify, send_from_directory, send_file, Respo
 from flask_cors import CORS 
 import json
 import base64
-# add
 from PIL import Image, ExifTags
 from io import BytesIO
 import zipfile
@@ -258,26 +257,10 @@ def shutdown():
     func()
     return "Servidor encerrado"
 
-def compress_and_resize_image2(image_path, max_size=(500, 500), quality=50):
-    """ Reduz o tamanho e a qualidade da imagem antes de converter para base64 """
-    try:
-        with Image.open(image_path) as img:
-            img.thumbnail(max_size)
-            img = img.convert("RGB")
-            
-            buffer = BytesIO()
-            img.save(buffer, format="JPEG", quality=quality)
-            return base64.b64encode(buffer.getvalue()).decode("utf-8")
-    except Exception as e:
-        print(f"Erro ao processar imagem {image_path}: {e}")
-        return None
-
-# add
 def compress_and_resize_image(image_path, max_size=(500, 500), quality=50):
     """ Reduz o tamanho e a qualidade da imagem antes de converter para base64 e corrige orientação """
     try:
         with Image.open(image_path) as img:
-            # Corrigir orientação (EXIF)
             try:
                 exif = img._getexif()
                 if exif is not None:
@@ -292,7 +275,7 @@ def compress_and_resize_image(image_path, max_size=(500, 500), quality=50):
                     elif orientation_value == 8:
                         img = img.rotate(90, expand=True)
             except Exception as e:
-                pass  # Se não tiver EXIF ou der erro, ignora
+                pass
 
             img.thumbnail(max_size)
             img = img.convert("RGB")
@@ -312,7 +295,6 @@ def is_running() -> bool:
     return flask_thread is not None and flask_thread.is_alive()
 
 def run_flask():
-    """Função para rodar o Flask em uma thread separada."""
     app.run(host="0.0.0.0", port=get_port(), debug=False, use_reloader=False)
 
 def start() -> None:
@@ -321,7 +303,7 @@ def start() -> None:
     if not is_running():
         flask_thread = Thread(target=run_flask, daemon=True)
         flask_thread.start()
-        server = "running"
+        server = 'runing';
 
 def stop() -> None:
     global flask_thread, server

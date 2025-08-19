@@ -2,13 +2,14 @@ from threading import Thread
 from typing import Optional
 import os
 
-from flask import Flask,request, jsonify, send_from_directory
+from flask import Flask,request, jsonify, send_from_directory, send_file, Response
 from flask_cors import CORS 
 import json
 import base64
-from PIL import Image
+from PIL import Image, ExifTags
 from io import BytesIO
-
+import zipfile
+import io
 
 DIRECTORY = os.path.join(os.path.dirname(__file__), "dist/hello-world-app")
 
@@ -54,6 +55,46 @@ def get_enssay_collections():
 
     return results
 
+def update_enssay_collections(folder_name):
+    payload = request.get_json() or {}
+    new_name = payload.get("name")
+    new_description = payload.get("description")
+
+    if new_name is None or new_description is None:
+        return jsonify({"error": "É necessário enviar 'name' e 'description' no corpo da requisição"}), 400
+
+    base = get_base_path()
+    folder_path = os.path.join(base, folder_name)
+    data_json_path = os.path.join(folder_path, "Data.json")
+
+    if not os.path.isdir(folder_path):
+        return jsonify({"error": f"Pasta '{folder_name}' não encontrada"}), 404
+
+    if not os.path.exists(data_json_path):
+        return jsonify({"error": f"Arquivo Data.json não existe em '{folder_name}'"}), 404
+
+    try:
+        with open(data_json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        return jsonify({"error": f"Falha ao ler {data_json_path}: {e}"}), 500
+
+    data["name"] = new_name
+    data["description"] = new_description
+
+    try:
+        with open(data_json_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return jsonify({"error": f"Falha ao salvar {data_json_path}: {e}"}), 500
+
+    result = {
+        "nameFolder": folder_name,
+        "name":     data["name"],
+        "description": data["description"]
+    }
+    return result
+
 def get_captures_taken(folder_name):
     folder_path = os.path.join(get_base_path(), folder_name)
     result = []
@@ -92,7 +133,13 @@ def find_and_parse_folders(start_path, use_training):
 
                     obj = {
                         "analystName": data.get("analystName"),
-                        "assaysCollection": data["key"].get("assaysCollection"),
+                        "referenceFileName": data.get("referenceFileName"),
+                        "stockName": data["readingMedium"].get("source").get("aliquot").get("stock").get("name"),
+                        "aliquotName": data["readingMedium"].get("source").get("aliquot").get("name"),
+                        "standardVolume": data.get("extraValues").get("StandardVolume"),
+                        "usedVolume": data.get("extraValues").get("UsedVolume"),
+                        "datetime": data.get("datetime"),
+                        #"assaysCollection": data["key"].get("assaysCollection"),
                         "analyte": data["key"].get("analyte"),
                         "analyticalParameter": data["key"].get("analyticalParameter"),
                         "captureTechnique": data["key"].get("captureTechnique"),
@@ -115,9 +162,46 @@ def find_and_parse_folders(start_path, use_training):
 
     return result
 
+@app.route('/download', methods=['GET'])
+def download_directory():
+    path_default = get_base_path()
+    directory_path_param = request.args.get('directoryPath')
+
+    if not directory_path_param:
+        return "Missing 'directoryPath' query parameter", 400
+
+    directory_path = os.path.join(path_default, directory_path_param)
+
+    if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
+        return "Directory not found", 404
+
+    zip_filename = f"{os.path.basename(directory_path)}.zip"
+
+    memory_file = io.BytesIO()
+    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(directory_path):
+            for file in files:
+                full_path = os.path.join(root, file)
+                arcname = os.path.relpath(full_path, directory_path)
+                zipf.write(full_path, arcname)
+
+    memory_file.seek(0)
+
+    return send_file(
+        memory_file,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=zip_filename
+    )
+
 @app.route("/enssay-collections", methods=["GET"])
 def get_enssay_collections_endpoint():
     data = get_enssay_collections()
+    return jsonify(data)
+
+@app.route("/enssay-collections/<folder_name>", methods=["PUT"])
+def update_enssay_collection_endpoint(folder_name):
+    data = update_enssay_collections(folder_name)
     return jsonify(data)
 
 @app.route("/captures-taken", methods=["GET"])
@@ -170,9 +254,24 @@ def shutdown():
     return "Servidor encerrado"
 
 def compress_and_resize_image(image_path, max_size=(500, 500), quality=50):
-    """ Reduz o tamanho e a qualidade da imagem antes de converter para base64 """
     try:
         with Image.open(image_path) as img:
+            try:
+                exif = img._getexif()
+                if exif is not None:
+                    for orientation in ExifTags.TAGS.keys():
+                        if ExifTags.TAGS[orientation] == 'Orientation':
+                            break
+                    orientation_value = exif.get(orientation, None)
+                    if orientation_value == 3:
+                        img = img.rotate(180, expand=True)
+                    elif orientation_value == 6:
+                        img = img.rotate(270, expand=True)
+                    elif orientation_value == 8:
+                        img = img.rotate(90, expand=True)
+            except Exception as e:
+                pass
+
             img.thumbnail(max_size)
             img = img.convert("RGB")
             
@@ -190,7 +289,6 @@ def is_running() -> bool:
     return flask_thread is not None and flask_thread.is_alive()
 
 def run_flask():
-    """Função para rodar o Flask em uma thread separada."""
     app.run(host="0.0.0.0", port=get_port(), debug=False, use_reloader=False)
 
 def start() -> None:

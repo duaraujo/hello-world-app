@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, startWith, map } from 'rxjs/operators';
 import { NewGetFoldersService } from '../services/new-get-folders.service';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
+import { FileService } from '../services/file.service';
 import { Router } from '@angular/router';
 import {
   EditDialogComponent,
@@ -20,8 +20,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class EnssayCollectionsComponent implements OnInit, AfterViewInit {
   folderSelected = '';
   filterControl = new FormControl();
+  files: any[] = [];
   folders: any[] = [];
-  filteredFolders: any[] = [];
 
   constructor(
     private getFoldersService: NewGetFoldersService,
@@ -31,22 +31,7 @@ export class EnssayCollectionsComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar
   ) {}
 
-  ngOnInit(): void {
-    this.filterControl.valueChanges
-      .pipe(
-        debounceTime(200),
-        startWith(''),
-        map((value: string) => value.trim().toLowerCase())
-      )
-      .subscribe((filterText) => {
-        this.filteredFolders = this.folders.filter((folder) => {
-          return (
-            folder.name.toLowerCase().includes(filterText) ||
-            folder.description.toLowerCase().includes(filterText)
-          );
-        });
-      });
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -57,7 +42,6 @@ export class EnssayCollectionsComponent implements OnInit, AfterViewInit {
   getFolders(): void {
     this.getFoldersService.getFolders().subscribe((data: any[]) => {
       this.folders = data;
-      this.filteredFolders = data;
     });
   }
 

@@ -9,11 +9,11 @@
   </mat-form-field>
 
   <div class="contador">
-    {{ filteredFolders.length }} itens encontrados
+    {{ folders.length }} itens encontrados
   </div>
 
   <div class="cards-wrapper" fxLayout="row wrap" fxLayoutGap="16px">
-    <div *ngFor="let element of filteredFolders" fxFlex="100%" fxFlex.gt-xs="48%" fxFlex.gt-sm="31%">
+    <div *ngFor="let element of folders" fxFlex="100%" fxFlex.gt-xs="48%" fxFlex.gt-sm="31%">
       <mat-card class="card-colecao">
         <mat-card-content>
           <h2 class="nome">{{ element.name }}</h2>
@@ -31,6 +31,7 @@
             <mat-icon>visibility</mat-icon>
           </button>
         </mat-card-actions>
+
 
       </mat-card>
     </div>
